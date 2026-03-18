@@ -10,15 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
+      options: --privileged
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install archiso
-        run: pacman -Syu --noconfirm archiso
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools
 
       - name: Build ISO
         run: |
+          mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
       - name: Upload ISO artifact
