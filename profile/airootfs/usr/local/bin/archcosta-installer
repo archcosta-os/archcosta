@@ -1,0 +1,3 @@
+#!/bin/bash
+# archcosta-installer: Launches Calamares with proper branding
+sudo calamares -d

@@ -1,0 +1,10 @@
+#!/bin/bash
+# archcosta-live-setup: Post-boot configuration for live environment
+
+# Set default wallpaper for live session
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s /usr/share/backgrounds/archcosta-default.jpg
+
+# Start welcome app if exists
+if [ -f /usr/bin/archcosta-welcome ]; then
+    archcosta-welcome &
+fi

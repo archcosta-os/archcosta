@@ -1,0 +1,28 @@
+name: Build ISO
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'   # Monthly ISO builds
+
+jobs:
+  iso:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install archiso
+        run: pacman -Syu --noconfirm archiso
+
+      - name: Build ISO
+        run: |
+          mkarchiso -v -w /tmp/work -o /tmp/out profile/
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: archcosta-iso
+          path: /tmp/out/*.iso
