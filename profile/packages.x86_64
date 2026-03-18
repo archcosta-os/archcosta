@@ -31,7 +31,7 @@ archcosta-calamares
 brave-bin
 calamares
 calamares-nixos-extensions
-matcha-gtk-theme
+arc-gtk-theme
 papirus-icon-theme
 networkmanager
 network-manager-applet
