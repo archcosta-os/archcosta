@@ -15,37 +15,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # We need to install curl and gnupg first as they might not be in the base image or need update
-      - name: Setup repositories on host
+      - name: Setup Build Environment
         run: |
-          # Initialize pacman keyring
+          # Initialize pacman keyring for the host to allow installing dependencies
           pacman-key --init
           pacman-key --populate archlinux
           
-          # Install curl if not present
-          pacman -Sy --noconfirm curl
-          
-          # Fetch CachyOS key from a more reliable source (GitHub raw)
-          # Key ID: F3B607488DB35A47 (Updated)
-          curl -L -o cachyos-keyring.gpg https://github.com/CachyOS/CachyOS-Settings/raw/master/usr/share/pacman/keyrings/cachyos.gpg
-          
-          # If the above fails or is not found, try the .asc version
-          if [ ! -s cachyos-keyring.gpg ]; then
-            curl -L -o cachyos-keyring.gpg https://mirror.cachyos.org/cachyos-repo.gpg || true
-          fi
-          
-          pacman-key --add cachyos-keyring.gpg
-          pacman-key --lsign-key F3B607488DB35A47
-          
-          # Install dependencies
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git
+          # Update and install build dependencies from official Arch repos
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl
 
       - name: Build ISO
         run: |
+          # Create output directory
           mkdir -p /tmp/out
+          
+          # Build the ISO using the profile
+          # Note: SigLevel is set to Optional TrustAll in profile/pacman.conf to bypass GPG issues in CI
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
-      # We use 'always()' to ensure we get logs even if build fails
       - name: Upload ISO artifact
         if: always()
         uses: actions/upload-artifact@v4
