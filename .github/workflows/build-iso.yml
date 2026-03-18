@@ -15,9 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Setup repositories on host
         run: |
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools
+          # Import CachyOS keys
+          pacman-key --init
+          pacman-key --populate archlinux
+          pacman-key --recv-keys F3B607488DB359F5
+          pacman-key --lsign-key F3B607488DB359F5
+          
+          # Install dependencies
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git
 
       - name: Build ISO
         run: |
