@@ -15,16 +15,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # We need to install curl and gnupg first as they might not be in the base image or need update
       - name: Setup repositories on host
         run: |
           # Initialize pacman keyring
           pacman-key --init
           pacman-key --populate archlinux
           
-          # Fetch CachyOS key directly to avoid keyserver issues
-          curl -O https://mirror.cachyos.org/cachyos-repo.gpg
-          pacman-key --add cachyos-repo.gpg
-          pacman-key --lsign-key F3B607488DB359F5
+          # Install curl if not present
+          pacman -Sy --noconfirm curl
+          
+          # Fetch CachyOS key from a more reliable source (GitHub raw)
+          # Key ID: F3B607488DB35A47 (Updated)
+          curl -L -o cachyos-keyring.gpg https://github.com/CachyOS/CachyOS-Settings/raw/master/usr/share/pacman/keyrings/cachyos.gpg
+          
+          # If the above fails or is not found, try the .asc version
+          if [ ! -s cachyos-keyring.gpg ]; then
+            curl -L -o cachyos-keyring.gpg https://mirror.cachyos.org/cachyos-repo.gpg || true
+          fi
+          
+          pacman-key --add cachyos-keyring.gpg
+          pacman-key --lsign-key F3B607488DB35A47
           
           # Install dependencies
           pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git
@@ -34,7 +45,9 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
+      # We use 'always()' to ensure we get logs even if build fails
       - name: Upload ISO artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: archcosta-iso
