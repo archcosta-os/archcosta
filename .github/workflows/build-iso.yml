@@ -17,10 +17,13 @@ jobs:
 
       - name: Setup repositories on host
         run: |
-          # Import CachyOS keys
+          # Initialize pacman keyring
           pacman-key --init
           pacman-key --populate archlinux
-          pacman-key --recv-keys F3B607488DB359F5
+          
+          # Fetch CachyOS key directly to avoid keyserver issues
+          curl -O https://mirror.cachyos.org/cachyos-repo.gpg
+          pacman-key --add cachyos-repo.gpg
           pacman-key --lsign-key F3B607488DB359F5
           
           # Install dependencies
