@@ -1,6 +1,13 @@
 base
+archiso
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+nbd
+pv
 linux-cachyos
 linux-cachyos-headers
+linux-firmware
+sof-firmware
 cachyos-keyring
 cachyos-mirrorlist
 intel-ucode
@@ -36,11 +43,18 @@ xfconf
 xfdesktop
 xfwm4
 xfce4-whiskermenu-plugin
+archcosta-bash-shared
+archcosta-hooks
 archcosta-settings
 archcosta-skeleton
 archcosta-xfce-config
 archcosta-artwork
 archcosta-calamares
+archcosta-welcome
+archcosta-wiki
+archcosta-update-notifier
+archcosta-log-tool
+archcosta-kernel-manager
 brave-bin
 cachyos-calamares-qt6-grub
 materia-gtk-theme
@@ -129,7 +143,7 @@ noto-fonts-cjk
 noto-fonts-emoji
 ttf-jetbrains-mono
 ttf-fira-code
-ttf-font-awesome
+woff2-font-awesome
 adobe-source-sans-pro-fonts
 adobe-source-code-pro-fonts
 ttf-dejavu
@@ -140,5 +154,3 @@ lxappearance
 qt5ct
 qt6ct
 kvantum
-archcosta-welcome
-archcosta-wiki
