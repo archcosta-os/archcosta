@@ -1,7 +1,11 @@
+base
 linux-cachyos
 linux-cachyos-headers
 cachyos-keyring
 cachyos-mirrorlist
+intel-ucode
+amd-ucode
+licenses
 grub
 syslinux
 memtest86+
