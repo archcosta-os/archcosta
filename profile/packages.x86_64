@@ -29,8 +29,7 @@ archcosta-xfce-config
 archcosta-artwork
 archcosta-calamares
 brave-bin
-calamares
-calamares-nixos-extensions
+cachyos-calamares-qt6-grub
 materia-gtk-theme
 papirus-icon-theme
 networkmanager
@@ -89,7 +88,6 @@ xdg-user-dirs
 xdg-utils
 viewnior
 catfish
-menulibre
 mugshot
 font-manager
 gnome-disk-utility
@@ -131,7 +129,5 @@ lxappearance
 qt5ct
 qt6ct
 kvantum
-qt5-styleplugins
-qt6-styleplugins
 archcosta-welcome
 archcosta-wiki
