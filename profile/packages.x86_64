@@ -25,7 +25,6 @@ mtools
 dosfstools
 gptfdisk
 earlyoom
-plymouth
 lightdm
 lightdm-gtk-greeter
 exo
