@@ -41,24 +41,33 @@ jobs:
           retention-days: 7
 
       - name: Generate Backup Public Link (Gofile)
+        continue-on-error: true
         run: |
           echo "Uploading to Gofile..."
           ISO_PATH=$(ls /tmp/out/*.iso)
           
-          # Get best server for upload
-          SERVER=$(curl -s https://api.gofile.io/getServer | jq -r '.data.server')
+          # Try to get best server with a timeout and user-agent
+          SERVER_DATA=$(curl -s -m 10 -H "User-Agent: Mozilla/5.0" https://api.gofile.io/getServer)
+          SERVER=$(echo "$SERVER_DATA" | jq -r '.data.server' 2>/dev/null)
           
-          # Upload file
-          RESPONSE=$(curl -X POST "https://${SERVER}.gofile.io/uploadFile" \
+          if [ -z "$SERVER" ] || [ "$SERVER" == "null" ]; then
+            echo "API failed, using fallback server store1"
+            SERVER="store1"
+          fi
+          
+          # Upload file with progress bar and error handling
+          RESPONSE=$(curl -m 300 -H "User-Agent: Mozilla/5.0" -X POST "https://${SERVER}.gofile.io/uploadFile" \
               -F "file=@${ISO_PATH}")
           
           # Extract download page URL
-          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage')
+          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage' 2>/dev/null)
           
-          if [ "$DOWNLOAD_URL" != "null" ]; then
+          if [ -n "$DOWNLOAD_URL" ] && [ "$DOWNLOAD_URL" != "null" ]; then
               echo "BACKUP_LINK=$DOWNLOAD_URL" >> $GITHUB_ENV
+              echo "Successfully uploaded to Gofile: $DOWNLOAD_URL"
           else
-              echo "BACKUP_LINK=Upload failed" >> $GITHUB_ENV
+              echo "BACKUP_LINK=Gofile upload failed" >> $GITHUB_ENV
+              echo "Gofile response: $RESPONSE"
           fi
 
       - name: Display Public Download Links
@@ -70,7 +79,7 @@ jobs:
           echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-zip.zip"
           echo ""
           echo "Backup Link (Powered by Gofile.io):"
-          echo "${{ env.BACKUP_LINK }}"
+          echo "${{ env.BACKUP_LINK || 'Upload failed or skipped' }}"
           echo ""
           echo "GitHub Actions Page (Requires Login):"
           echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
