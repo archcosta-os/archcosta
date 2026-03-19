@@ -26,7 +26,15 @@ dosfstools
 gptfdisk
 earlyoom
 lightdm
+accountsservice
+dbus
+accountsservice
+dbus
 lightdm-gtk-greeter
+accountsservice
+dbus
+accountsservice
+dbus
 exo
 garcon
 thunar

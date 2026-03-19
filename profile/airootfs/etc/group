@@ -3,3 +3,5 @@ wheel:x:998:live
 video:x:986:live
 audio:x:995:live
 live:x:1000:
+nopasswdlogin:x:966:live
+nopasswdlogin:x:966:live
