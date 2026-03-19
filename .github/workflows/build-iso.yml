@@ -19,7 +19,7 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
 
       - name: Build ISO
         run: |
@@ -31,7 +31,6 @@ jobs:
           cd /tmp/out
           # Explicitly zip the ISO for public download compatibility
           zip archcosta-spark.zip *.iso
-          echo "ISO_NAME=$(ls *.iso | head -n 1)" >> $GITHUB_ENV
 
       - name: Upload ISO artifact
         if: always()
@@ -41,24 +40,36 @@ jobs:
           path: /tmp/out/archcosta-spark.zip
           retention-days: 7
 
-      - name: Generate Backup Public Link
+      - name: Generate Backup Public Link (Gofile)
         run: |
-          echo "Generating temporary backup link..."
+          echo "Uploading to Gofile..."
           ISO_PATH=$(ls /tmp/out/*.iso)
-          # Upload to transfer.sh (valid for 14 days)
-          # We use the raw ISO here for the backup link
-          curl --upload-file "$ISO_PATH" https://transfer.sh/$(basename "$ISO_PATH") > transfer_link.txt
-          echo "BACKUP_LINK=$(cat transfer_link.txt)" >> $GITHUB_ENV
+          
+          # Get best server for upload
+          SERVER=$(curl -s https://api.gofile.io/getServer | jq -r '.data.server')
+          
+          # Upload file
+          RESPONSE=$(curl -X POST "https://${SERVER}.gofile.io/uploadFile" \
+              -F "file=@${ISO_PATH}")
+          
+          # Extract download page URL
+          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage')
+          
+          if [ "$DOWNLOAD_URL" != "null" ]; then
+              echo "BACKUP_LINK=$DOWNLOAD_URL" >> $GITHUB_ENV
+          else
+              echo "BACKUP_LINK=Upload failed" >> $GITHUB_ENV
+          fi
 
       - name: Display Public Download Links
         run: |
           echo "--------------------------------------------------------------------------------"
           echo "🚀 PUBLIC DOWNLOAD LINKS (No Login Required):"
           echo ""
-          echo "Primary Link (Direct Zip):"
+          echo "Primary Link (Powered by nightly.link):"
           echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-zip.zip"
           echo ""
-          echo "Backup Link (14 Days, Direct ISO):"
+          echo "Backup Link (Powered by Gofile.io):"
           echo "${{ env.BACKUP_LINK }}"
           echo ""
           echo "GitHub Actions Page (Requires Login):"
