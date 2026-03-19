@@ -48,7 +48,9 @@ jobs:
           ISO_FILE=$(ls /tmp/out/*.iso | head -n 1)
           
           echo "Creating pre-release $TAG_NAME..."
+          # Added --repo flag to fix "not a git repository" error in container
           gh release create "$TAG_NAME" "$ISO_FILE" \
+            --repo "$GITHUB_REPOSITORY" \
             --prerelease \
             --title "ArchCosta Spark Build ($TAG_NAME)" \
             --notes "Automated development build of ArchCosta Spark. This is a pre-release version."
