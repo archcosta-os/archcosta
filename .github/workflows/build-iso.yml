@@ -19,25 +19,34 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip
 
       - name: Build ISO
         run: |
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
+      - name: Prepare Public Artifact
+        run: |
+          cd /tmp/out
+          # Explicitly zip the ISO for public download compatibility
+          zip archcosta-spark.zip *.iso
+          echo "ISO_NAME=$(ls *.iso | head -n 1)" >> $GITHUB_ENV
+
       - name: Upload ISO artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: archcosta-spark-iso
-          path: /tmp/out/*.iso
+          name: archcosta-spark-zip
+          path: /tmp/out/archcosta-spark.zip
+          retention-days: 7
 
       - name: Generate Backup Public Link
         run: |
           echo "Generating temporary backup link..."
           ISO_PATH=$(ls /tmp/out/*.iso)
           # Upload to transfer.sh (valid for 14 days)
+          # We use the raw ISO here for the backup link
           curl --upload-file "$ISO_PATH" https://transfer.sh/$(basename "$ISO_PATH") > transfer_link.txt
           echo "BACKUP_LINK=$(cat transfer_link.txt)" >> $GITHUB_ENV
 
@@ -46,12 +55,12 @@ jobs:
           echo "--------------------------------------------------------------------------------"
           echo "🚀 PUBLIC DOWNLOAD LINKS (No Login Required):"
           echo ""
-          echo "Primary Link (Powered by nightly.link):"
-          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-iso.zip"
+          echo "Primary Link (Direct Zip):"
+          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-zip.zip"
           echo ""
-          echo "Backup Link (Valid for 14 days):"
+          echo "Backup Link (14 Days, Direct ISO):"
           echo "${{ env.BACKUP_LINK }}"
           echo ""
-          echo "GitHub Actions Page (Requires Login but 100% Reliable):"
+          echo "GitHub Actions Page (Requires Login):"
           echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           echo "--------------------------------------------------------------------------------"
