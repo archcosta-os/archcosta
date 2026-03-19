@@ -17,25 +17,39 @@ jobs:
 
       - name: Setup Build Environment
         run: |
-          # Initialize pacman keyring for the host to allow installing dependencies
           pacman-key --init
           pacman-key --populate archlinux
-          
-          # Update and install build dependencies from official Arch repos
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip
 
       - name: Build ISO
         run: |
-          # Create output directory
           mkdir -p /tmp/out
-          
-          # Build the ISO using the profile
-          # Note: SigLevel is set to Optional TrustAll in profile/pacman.conf to bypass GPG issues in CI
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
+
+      - name: Prepare Public Artifact
+        run: |
+          cd /tmp/out
+          # Create a consistent zip name for public download
+          zip archcosta-spark-iso.zip *.iso
 
       - name: Upload ISO artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: archcosta-iso
-          path: /tmp/out/*.iso
+          path: /tmp/out/archcosta-spark-iso.zip
+
+      - name: Display Public Download Links
+        run: |
+          echo "--------------------------------------------------------------------------------"
+          echo "🚀 PUBLIC DOWNLOAD LINKS (No Login Required):"
+          echo ""
+          echo "Primary Link:"
+          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-iso.zip"
+          echo ""
+          echo "Alternative Link (Workflow Name):"
+          echo "https://nightly.link/${{ github.repository }}/workflows/Build%20ISO/main/archcosta-iso.zip"
+          echo ""
+          echo "GitHub Actions Page (Requires Login but 100% Reliable):"
+          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "--------------------------------------------------------------------------------"
