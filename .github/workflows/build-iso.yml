@@ -30,7 +30,12 @@ jobs:
         run: |
           cd /tmp/out
           # Explicitly zip the ISO for public download compatibility
-          zip archcosta-spark.zip *.iso
+          if ls *.iso 1> /dev/null 2>&1; then
+            zip archcosta-spark.zip *.iso
+          else
+            echo "No ISO file found to zip!"
+            exit 1
+          fi
 
       - name: Upload ISO artifact
         if: always()
@@ -41,13 +46,19 @@ jobs:
           retention-days: 7
 
       - name: Generate Backup Public Link (Gofile)
+        if: success()
         continue-on-error: true
         run: |
           echo "Uploading to Gofile..."
-          ISO_PATH=$(ls /tmp/out/*.iso)
+          ISO_PATH=$(ls /tmp/out/*.iso | head -n 1)
           
-          # Try to get best server with a timeout and user-agent
-          SERVER_DATA=$(curl -s -m 10 -H "User-Agent: Mozilla/5.0" https://api.gofile.io/getServer)
+          if [ -z "$ISO_PATH" ]; then
+            echo "No ISO found, skipping Gofile upload."
+            exit 0
+          fi
+          
+          # Try to get best server
+          SERVER_DATA=$(curl -s -m 15 -H "User-Agent: Mozilla/5.0" https://api.gofile.io/getServer)
           SERVER=$(echo "$SERVER_DATA" | jq -r '.data.server' 2>/dev/null)
           
           if [ -z "$SERVER" ] || [ "$SERVER" == "null" ]; then
@@ -55,8 +66,10 @@ jobs:
             SERVER="store1"
           fi
           
-          # Upload file with progress bar and error handling
-          RESPONSE=$(curl -m 300 -H "User-Agent: Mozilla/5.0" -X POST "https://${SERVER}.gofile.io/uploadFile" \
+          echo "Using server: $SERVER"
+          
+          # Upload file
+          RESPONSE=$(curl -m 600 -H "User-Agent: Mozilla/5.0" -X POST "https://${SERVER}.gofile.io/uploadFile" \
               -F "file=@${ISO_PATH}")
           
           # Extract download page URL
