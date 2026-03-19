@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 iso_name="archcosta"
-iso_label="ARCHCOSTA_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
-iso_publisher="ArchCosta <https://archcosta.org>"
-iso_application="ArchCosta Linux"
-iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
+iso_label="ARCHCOSTA_SPARK"
+iso_publisher="ArchCosta <https://archcosta-os.github.io>"
+iso_application="ArchCosta Linux Spark"
+iso_version="Spark"
 install_dir="arch"
 buildmodes=('iso')
 bootmodes=('bios.syslinux' 'uefi.grub')
