@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 0 1 * *'   # Monthly ISO builds
 
+permissions:
+  contents: write
+
 jobs:
   iso:
     runs-on: ubuntu-latest
@@ -19,25 +22,38 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq github-cli
 
       - name: Build ISO
         run: |
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
-      - name: Prepare Public Artifact
+      - name: Prepare Artifacts
         run: |
           cd /tmp/out
-          # Explicitly zip the ISO for public download compatibility
           if ls *.iso 1> /dev/null 2>&1; then
             zip archcosta-spark.zip *.iso
           else
-            echo "No ISO file found to zip!"
+            echo "No ISO file found!"
             exit 1
           fi
 
-      - name: Upload ISO artifact
+      - name: Create GitHub Pre-release
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="spark-$(date +'%Y.%m.%d-%H%M')"
+          ISO_FILE=$(ls /tmp/out/*.iso | head -n 1)
+          
+          echo "Creating pre-release $TAG_NAME..."
+          gh release create "$TAG_NAME" "$ISO_FILE" \
+            --prerelease \
+            --title "ArchCosta Spark Build ($TAG_NAME)" \
+            --notes "Automated development build of ArchCosta Spark. This is a pre-release version."
+
+      - name: Upload ISO artifact (Internal)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -45,55 +61,14 @@ jobs:
           path: /tmp/out/archcosta-spark.zip
           retention-days: 7
 
-      - name: Generate Backup Public Link (Gofile)
-        if: success()
-        continue-on-error: true
-        run: |
-          echo "Uploading to Gofile..."
-          ISO_PATH=$(ls /tmp/out/*.iso | head -n 1)
-          
-          if [ -z "$ISO_PATH" ]; then
-            echo "No ISO found, skipping Gofile upload."
-            exit 0
-          fi
-          
-          # Try to get best server
-          SERVER_DATA=$(curl -s -m 15 -H "User-Agent: Mozilla/5.0" https://api.gofile.io/getServer)
-          SERVER=$(echo "$SERVER_DATA" | jq -r '.data.server' 2>/dev/null)
-          
-          if [ -z "$SERVER" ] || [ "$SERVER" == "null" ]; then
-            echo "API failed, using fallback server store1"
-            SERVER="store1"
-          fi
-          
-          echo "Using server: $SERVER"
-          
-          # Upload file
-          RESPONSE=$(curl -m 600 -H "User-Agent: Mozilla/5.0" -X POST "https://${SERVER}.gofile.io/uploadFile" \
-              -F "file=@${ISO_PATH}")
-          
-          # Extract download page URL
-          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage' 2>/dev/null)
-          
-          if [ -n "$DOWNLOAD_URL" ] && [ "$DOWNLOAD_URL" != "null" ]; then
-              echo "BACKUP_LINK=$DOWNLOAD_URL" >> $GITHUB_ENV
-              echo "Successfully uploaded to Gofile: $DOWNLOAD_URL"
-          else
-              echo "BACKUP_LINK=Gofile upload failed" >> $GITHUB_ENV
-              echo "Gofile response: $RESPONSE"
-          fi
-
-      - name: Display Public Download Links
+      - name: Display Download Links
         run: |
           echo "--------------------------------------------------------------------------------"
-          echo "🚀 PUBLIC DOWNLOAD LINKS (No Login Required):"
+          echo "🚀 DOWNLOAD LINKS:"
           echo ""
-          echo "Primary Link (Powered by nightly.link):"
+          echo "GitHub Release (Permanent & Public):"
+          echo "https://github.com/${{ github.repository }}/releases"
+          echo ""
+          echo "Direct Proxy (No Login Required):"
           echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-zip.zip"
-          echo ""
-          echo "Backup Link (Powered by Gofile.io):"
-          echo "${{ env.BACKUP_LINK || 'Upload failed or skipped' }}"
-          echo ""
-          echo "GitHub Actions Page (Requires Login):"
-          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           echo "--------------------------------------------------------------------------------"
