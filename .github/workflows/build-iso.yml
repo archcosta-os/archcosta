@@ -2,11 +2,18 @@ name: Build ISO
 
 on:
   workflow_dispatch:
+    inputs:
+      desktop_environment:
+        description: 'Select Default Desktop Environment'
+        required: true
+        default: 'xfce'
+        type: choice
+        options:
+          - xfce
+          - cinnamon
+          - mate
   schedule:
     - cron: '0 0 1 * *'   # Monthly ISO builds
-
-permissions:
-  contents: write
 
 jobs:
   iso:
@@ -22,55 +29,58 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq github-cli
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip
+
+      - name: Configure Desktop Environment
+        run: |
+          DE="${{ github.event.inputs.desktop_environment }}"
+          [ -z "$DE" ] && DE="xfce" # Default for scheduled builds
+          
+          echo "Configuring ISO for: $DE"
+          
+          # Define packages for each DE
+          XFCE_PKGS="exo garcon thunar thunar-volman tumbler xfce4-appfinder xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfconf xfdesktop xfwm4 xfce4-whiskermenu-plugin xfce4-screenshooter xfce4-clipman-plugin xfce4-notifyd xfce4-screensaver xfce4-datetime-plugin xfce4-mount-plugin xfce4-netload-plugin xfce4-systemload-plugin xfce4-weather-plugin xfce4-cpugraph-plugin xfce4-taskmanager xfce4-dict xfce4-notes-plugin xfce4-timer-plugin xfce4-genmon-plugin archcosta-xfce-settings"
+          CINNAMON_PKGS="cinnamon xed xplayer metacity blueberry nemo-fileroller archcosta-cinnamon-settings"
+          MATE_PKGS="mate mate-extra archcosta-mate-settings"
+          
+          case "$DE" in
+            xfce)     SELECTED_PKGS="$XFCE_PKGS" ;;
+            cinnamon) SELECTED_PKGS="$CINNAMON_PKGS" ;;
+            mate)     SELECTED_PKGS="$MATE_PKGS" ;;
+          esac
+          
+          # Inject packages into the placeholder
+          sed -i "s/# DESKTOP_ENVIRONMENT_PLACEHOLDER/$SELECTED_PKGS/" profile/packages.x86_64
+          
+          # Update branding in profiledef.sh
+          sed -i "s/iso_label=\"ARCHCOSTA_SPARK\"/iso_label=\"ARCHCOSTA_SPARK_${DE^^}\"/" profile/profiledef.sh
+          sed -i "s/iso_application=\"ArchCosta Linux Spark\"/iso_application=\"ArchCosta Linux Spark ($DE)\"/" profile/profiledef.sh
 
       - name: Build ISO
         run: |
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
-      - name: Prepare Artifacts
+      - name: Prepare Public Artifact
         run: |
+          DE="${{ github.event.inputs.desktop_environment }}"
+          [ -z "$DE" ] && DE="xfce"
           cd /tmp/out
-          if ls *.iso 1> /dev/null 2>&1; then
-            zip archcosta-spark.zip *.iso
-          else
-            echo "No ISO file found!"
-            exit 1
-          fi
+          # Create a specific zip name
+          zip "archcosta-spark-${DE}-iso.zip" *.iso
 
-      - name: Create GitHub Pre-release
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG_NAME="spark-$(date +'%Y.%m.%d-%H%M')"
-          ISO_FILE=$(ls /tmp/out/*.iso | head -n 1)
-          
-          echo "Creating pre-release $TAG_NAME..."
-          # Added --repo flag to fix "not a git repository" error in container
-          gh release create "$TAG_NAME" "$ISO_FILE" \
-            --repo "$GITHUB_REPOSITORY" \
-            --prerelease \
-            --title "ArchCosta Spark Build ($TAG_NAME)" \
-            --notes "Automated development build of ArchCosta Spark. This is a pre-release version."
-
-      - name: Upload ISO artifact (Internal)
+      - name: Upload ISO artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: archcosta-spark-zip
-          path: /tmp/out/archcosta-spark.zip
-          retention-days: 7
+          name: archcosta-iso
+          path: /tmp/out/archcosta-spark-*-iso.zip
 
-      - name: Display Download Links
+      - name: Display Public Download Links
         run: |
+          DE="${{ github.event.inputs.desktop_environment }}"
+          [ -z "$DE" ] && DE="xfce"
           echo "--------------------------------------------------------------------------------"
-          echo "🚀 DOWNLOAD LINKS:"
-          echo ""
-          echo "GitHub Release (Permanent & Public):"
-          echo "https://github.com/${{ github.repository }}/releases"
-          echo ""
-          echo "Direct Proxy (No Login Required):"
-          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-spark-zip.zip"
+          echo "🚀 PUBLIC DOWNLOAD LINK ($DE):"
+          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-iso.zip"
           echo "--------------------------------------------------------------------------------"
