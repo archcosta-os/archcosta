@@ -59,7 +59,7 @@ gvfs-mtp
 rofi
 dunst
 libnotify
-neofetch
+fastfetch
 htop
 vim
 git
