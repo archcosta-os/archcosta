@@ -29,7 +29,7 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils
 
       - name: Configure Desktop Environment
         run: |
@@ -59,19 +59,14 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
-      - name: Prepare Public Artifact
-        run: |
-          DE="${{ github.event.inputs.desktop_environment }}"
-          [ -z "$DE" ] && DE="xfce"
-          cd /tmp/out
-          zip "archcosta-${DE}-iso.zip" *.iso
-
       - name: Upload ISO artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: archcosta-iso
-          path: /tmp/out/archcosta-*-iso.zip
+          # Use a dynamic name for the artifact itself
+          name: archcosta-${{ github.event.inputs.desktop_environment || 'xfce' }}-iso
+          # Upload the raw .iso file. GitHub will zip it once automatically.
+          path: /tmp/out/*.iso
 
       - name: Display Public Download Links
         run: |
@@ -79,5 +74,5 @@ jobs:
           [ -z "$DE" ] && DE="xfce"
           echo "--------------------------------------------------------------------------------"
           echo "🚀 PUBLIC DOWNLOAD LINK ($DE):"
-          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-iso.zip"
+          echo "https://nightly.link/${{ github.repository }}/workflows/build-iso/main/archcosta-${DE}-iso.zip"
           echo "--------------------------------------------------------------------------------"
