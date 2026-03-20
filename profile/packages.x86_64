@@ -4,12 +4,10 @@ mkinitcpio-archiso
 mkinitcpio-nfs-utils
 nbd
 pv
-linux-cachyos
-linux-cachyos-headers
+linux
+linux-headers
 linux-firmware
 sof-firmware
-cachyos-keyring
-cachyos-mirrorlist
 intel-ucode
 amd-ucode
 licenses
