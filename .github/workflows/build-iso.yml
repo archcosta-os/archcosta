@@ -34,11 +34,10 @@ jobs:
       - name: Configure Desktop Environment
         run: |
           DE="${{ github.event.inputs.desktop_environment }}"
-          [ -z "$DE" ] && DE="xfce" # Default for scheduled builds
+          [ -z "$DE" ] && DE="xfce"
           
           echo "Configuring ISO for: $DE"
           
-          # Define packages for each DE
           XFCE_PKGS="exo garcon thunar thunar-volman tumbler xfce4-appfinder xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfconf xfdesktop xfwm4 xfce4-whiskermenu-plugin xfce4-screenshooter xfce4-clipman-plugin xfce4-notifyd xfce4-screensaver xfce4-datetime-plugin xfce4-mount-plugin xfce4-netload-plugin xfce4-systemload-plugin xfce4-weather-plugin xfce4-cpugraph-plugin xfce4-taskmanager xfce4-dict xfce4-notes-plugin xfce4-timer-plugin xfce4-genmon-plugin archcosta-xfce-settings"
           CINNAMON_PKGS="cinnamon xed xplayer metacity blueberry nemo-fileroller archcosta-cinnamon-settings"
           MATE_PKGS="mate mate-extra archcosta-mate-settings"
@@ -49,12 +48,11 @@ jobs:
             mate)     SELECTED_PKGS="$MATE_PKGS" ;;
           esac
           
-          # Inject packages into the placeholder
           sed -i "s/# DESKTOP_ENVIRONMENT_PLACEHOLDER/$SELECTED_PKGS/" profile/packages.x86_64
           
           # Update branding in profiledef.sh
-          sed -i "s/iso_label=\"ARCHCOSTA_SPARK\"/iso_label=\"ARCHCOSTA_SPARK_${DE^^}\"/" profile/profiledef.sh
-          sed -i "s/iso_application=\"ArchCosta Linux Spark\"/iso_application=\"ArchCosta Linux Spark ($DE)\"/" profile/profiledef.sh
+          sed -i "s/iso_label=\"ARCHCOSTA\"/iso_label=\"ARCHCOSTA_${DE^^}\"/" profile/profiledef.sh
+          sed -i "s/iso_application=\"ArchCosta Linux\"/iso_application=\"ArchCosta Linux ($DE)\"/" profile/profiledef.sh
 
       - name: Build ISO
         run: |
@@ -66,15 +64,14 @@ jobs:
           DE="${{ github.event.inputs.desktop_environment }}"
           [ -z "$DE" ] && DE="xfce"
           cd /tmp/out
-          # Create a specific zip name
-          zip "archcosta-spark-${DE}-iso.zip" *.iso
+          zip "archcosta-${DE}-iso.zip" *.iso
 
       - name: Upload ISO artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: archcosta-iso
-          path: /tmp/out/archcosta-spark-*-iso.zip
+          path: /tmp/out/archcosta-*-iso.zip
 
       - name: Display Public Download Links
         run: |
