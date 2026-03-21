@@ -15,6 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache Pacman Packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/pacman/pkg
+          key: ${{ runner.os }}-pacman-${{ hashFiles('profile/packages.x86_64') }}
+          restore-keys: |
+            ${{ runner.os }}-pacman-
+
       - name: Setup Build Environment
         run: |
           pacman-key --init
@@ -32,17 +40,20 @@ jobs:
           ISO_NAME=$(basename "$ISO_FILE")
           
           echo "Finding best GoFile server..."
-          SERVER=$(curl -s https://api.gofile.io/getServer | jq -r '.data.server')
+          # Fetch server with timeout and error handling
+          SERVER_JSON=$(curl -s --max-time 10 https://api.gofile.io/getServer)
           
-          if [ -z "$SERVER" ] || [ "$SERVER" == "null" ]; then
-            # Fallback to a known working server if API call fails
+          # Only try parsing if we got a response
+          if [ -n "$SERVER_JSON" ]; then
+            SERVER=$(echo "$SERVER_JSON" | jq -r '.data.server // "store1"')
+          else
             SERVER="store1"
           fi
           
           echo "Uploading $ISO_NAME to GoFile server: $SERVER..."
           
           RESPONSE=$(curl -F "file=@$ISO_FILE" "https://${SERVER}.gofile.io/uploadFile")
-          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage')
+          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage // "null"')
           
           if [ "$DOWNLOAD_URL" != "null" ]; then
             echo "--------------------------------------------------------------------------------"
