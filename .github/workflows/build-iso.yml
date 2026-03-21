@@ -26,28 +26,31 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out profile/
 
-      - name: Upload to PixelDrain (Public Download)
-        env:
-          PIXELDRAIN_API_KEY: ${{ secrets.PIXELDRAIN_API_KEY }}
+      - name: Upload to GoFile (Public Download)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
           
-          echo "Uploading $ISO_NAME to PixelDrain..."
+          echo "Finding best GoFile server..."
+          SERVER=$(curl -s https://api.gofile.io/getServer | jq -r '.data.server')
           
-          # Upload and capture response
-          RESPONSE=$(curl -s -u ":$PIXELDRAIN_API_KEY" -T "$ISO_FILE" https://pixeldrain.com/api/file/)
+          if [ -z "$SERVER" ] || [ "$SERVER" == "null" ]; then
+            # Fallback to a known working server if API call fails
+            SERVER="store1"
+          fi
           
-          # Parse file ID using jq
-          FILE_ID=$(echo "$RESPONSE" | jq -r '.id')
+          echo "Uploading $ISO_NAME to GoFile server: $SERVER..."
           
-          if [ "$FILE_ID" != "null" ]; then
+          RESPONSE=$(curl -F "file=@$ISO_FILE" "https://${SERVER}.gofile.io/uploadFile")
+          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage')
+          
+          if [ "$DOWNLOAD_URL" != "null" ]; then
             echo "--------------------------------------------------------------------------------"
             echo "🚀 PUBLIC DOWNLOAD LINK (No Login Required):"
-            echo "https://pixeldrain.com/u/$FILE_ID"
+            echo "$DOWNLOAD_URL"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::PixelDrain upload failed. Response: $RESPONSE"
+            echo "::warning::GoFile upload failed. Response: $RESPONSE"
           fi
 
       - name: Upload ISO artifact (GitHub)
