@@ -23,6 +23,7 @@ mtools
 dosfstools
 gptfdisk
 earlyoom
+plymouth
 lightdm
 accountsservice
 dbus
