@@ -28,6 +28,7 @@ lightdm
 accountsservice
 dbus
 lightdm-gtk-greeter
+firefox
 
 # DESKTOP_ENVIRONMENT_PLACEHOLDER
 
