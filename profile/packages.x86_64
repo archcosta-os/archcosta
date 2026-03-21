@@ -32,6 +32,51 @@ firefox
 
 # DESKTOP_ENVIRONMENT_PLACEHOLDER
 
+# Gaming
+steam
+gamescope
+gamemode
+wine
+wine-gecko
+wine-mono
+winetricks
+vkd3d
+lib32-vkd3d
+lib32-nvidia-utils
+lib32-mesa
+vulkan-radeon
+
+# Creative & Multimedia
+ffmpeg
+gstreamer
+gst-libav
+gst-plugins-bad
+gst-plugins-ugly
+gst-plugins-base
+gst-plugins-good
+gst-plugin-pipewire
+ffmpegthumbs
+
+# Utility & System
+paru
+flatpak
+qemu-guest-agent
+spice-vdagent
+usb_modeswitch
+smartmontools
+testdisk
+python-distro
+fuse
+libappimage
+
+# Linexin Tools
+linexin-installer
+linexin-updater
+linexin-desktop-presets
+linexin-center
+linexin-desktop
+linpama
+
 archcosta-bash-shared
 archcosta-hooks
 archcosta-skeleton
@@ -47,7 +92,6 @@ archcosta-assistant
 archcosta-gamer
 archcosta-update
 
-archcosta-calamares
 materia-gtk-theme
 papirus-icon-theme
 networkmanager
