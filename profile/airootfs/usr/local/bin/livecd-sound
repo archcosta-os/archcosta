@@ -1,0 +1,5 @@
+#!/bin/bash
+# Play a welcome sound if enabled
+if [ -f /usr/share/sounds/archcosta/login.wav ]; then
+    pw-play /usr/share/sounds/archcosta/login.wav &
+fi
