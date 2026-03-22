@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-pacman-${{ hashFiles('profile/packages.x86_64') }}
+          key: ${{ runner.os }}-pacman-${{ hashFiles('packages.x86_64') }}
           restore-keys: |
             ${{ runner.os }}-pacman-
 
@@ -32,7 +32,7 @@ jobs:
       - name: Build ISO
         run: |
           mkdir -p /tmp/out
-          mkarchiso -v -w /tmp/work -o /tmp/out profile/
+          mkarchiso -v -w /tmp/work -o /tmp/out .
 
       - name: Upload to GoFile (Public Download)
         run: |
