@@ -26,7 +26,7 @@ docker run --privileged --rm \
     bash -c "
         pacman-key --init && \
         pacman-key --populate archlinux && \
-        pacman -Syu --noconfirm archiso git curl && \
+        pacman -Syu --noconfirm archiso grub libisoburn git curl && \
         mkarchiso -v -w /work -o /out /repo/profile/
     "
 
