@@ -72,7 +72,7 @@ jobs:
           # Update ISO name and label in profiledef.sh
           sed -i "s/iso_name=\"archcosta\"/iso_name=\"archcosta-${{ matrix.desktop }}\"/" profiledef.sh
           
-          # Fix label format to include desktop name (using Shell instead of GitHub expressions)
+          # Fix label format to include desktop name
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           sed -i "s/ARCHCOSTA_/ARCHCOSTA_${UPPER_DE}_/" profiledef.sh
 
@@ -81,15 +81,16 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Upload to Temp.sh (Public Download)
+      - name: Upload to up.sb (Public Download)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           
-          echo "Uploading $ISO_NAME to Temp.sh..."
-          # Temp.sh returns the download link in the response
-          DOWNLOAD_URL=$(curl -F "file=@$ISO_FILE" https://temp.sh/upload)
+          echo "Uploading $ISO_NAME to up.sb..."
+          # up.sb returns the download link in the response text
+          RESPONSE=$(curl -s https://up.sb -T "$ISO_FILE")
+          DOWNLOAD_URL=$(echo "$RESPONSE" | grep -o 'http://up.sb/[^ ]*' | head -n 1)
           
           if [ -n "$DOWNLOAD_URL" ]; then
             echo "--------------------------------------------------------------------------------"
@@ -97,7 +98,7 @@ jobs:
             echo "$DOWNLOAD_URL"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::Temp.sh upload failed."
+            echo "::warning::up.sb upload failed. Response: $RESPONSE"
           fi
 
       - name: Upload ISO artifact (GitHub)
