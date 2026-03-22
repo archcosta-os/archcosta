@@ -38,7 +38,7 @@ docker run --privileged --rm \
         pacman-key --init && \
         pacman-key --populate archlinux && \
         pacman -Syu --noconfirm archiso grub libisoburn git curl jq zip && \
-        mkarchiso -v -w /work -o /out /repo/profile/
+        mkarchiso -v -w /work -o /out /repo/
     "
 
 echo "--------------------------------------------------"
