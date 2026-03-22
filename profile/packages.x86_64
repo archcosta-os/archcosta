@@ -109,7 +109,5 @@ archcosta-update
 # Desktop Meta Packages (User selects during install)
 archcosta-xfce
 archcosta-plasma
-archcosta-hyprland
-archcosta-i3
 archcosta-cinnamon
 archcosta-mate
