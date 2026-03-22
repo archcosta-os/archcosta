@@ -2,12 +2,40 @@ name: Build ISO
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 1 * *'   # Monthly ISO builds
+    inputs:
+      desktop:
+        description: 'Desktop Environment to build'
+        required: true
+        default: 'xfce'
+        type: choice
+        options:
+          - xfce
+          - plasma
+          - cinnamon
+          - mate
+          - all
 
 jobs:
-  iso:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [ "${{ github.event.inputs.desktop }}" == "all" ]; then
+            echo 'matrix=["xfce", "plasma", "cinnamon", "mate"]' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix=["${{ github.event.inputs.desktop }}"]' >> $GITHUB_OUTPUT
+          fi
+
+  iso:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        desktop: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
     container:
       image: archlinux:latest
       options: --privileged
@@ -19,7 +47,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-pacman-${{ hashFiles('packages.x86_64') }}
+          key: ${{ runner.os }}-pacman-${{ matrix.desktop }}-${{ hashFiles('packages.x86_64') }}
           restore-keys: |
             ${{ runner.os }}-pacman-
 
@@ -29,44 +57,49 @@ jobs:
           pacman-key --populate archlinux
           pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
 
+      - name: Customize Profile for Desktop
+        run: |
+          # Remove all other desktop meta-packages from packages.x86_64
+          DESKTOPS=("archcosta-xfce" "archcosta-plasma" "archcosta-cinnamon" "archcosta-mate")
+          CURRENT="archcosta-${{ matrix.desktop }}"
+          
+          for d in "${DESKTOPS[@]}"; do
+            if [ "$d" != "$CURRENT" ]; then
+              sed -i "/$d/d" packages.x86_64
+            fi
+          done
+          
+          # Update ISO name and label in profiledef.sh
+          sed -i "s/iso_name=\"archcosta\"/iso_name=\"archcosta-${{ matrix.desktop }}\"/" profiledef.sh
+          # Fix label format to include desktop name
+          sed -i "s/ARCHCOSTA_/ARCHCOSTA_${{ matrix.desktop | upper }}_/" profiledef.sh
+
       - name: Build ISO
         run: |
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Upload to GoFile (Public Download)
+      - name: Upload to BashUpload (Public Download)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
           
-          echo "Finding best GoFile server..."
-          # Fetch server with timeout and error handling
-          SERVER_JSON=$(curl -s --max-time 10 https://api.gofile.io/getServer)
+          echo "Uploading $ISO_NAME to BashUpload..."
+          # BashUpload returns the download link in the response
+          DOWNLOAD_URL=$(curl https://bashupload.com/ -T "$ISO_FILE")
           
-          # Only try parsing if we got a response
-          if [ -n "$SERVER_JSON" ]; then
-            SERVER=$(echo "$SERVER_JSON" | jq -r '.data.server // "store1"')
-          else
-            SERVER="store1"
-          fi
-          
-          echo "Uploading $ISO_NAME to GoFile server: $SERVER..."
-          
-          RESPONSE=$(curl -F "file=@$ISO_FILE" "https://${SERVER}.gofile.io/uploadFile")
-          DOWNLOAD_URL=$(echo "$RESPONSE" | jq -r '.data.downloadPage // "null"')
-          
-          if [ "$DOWNLOAD_URL" != "null" ]; then
+          if [ -n "$DOWNLOAD_URL" ]; then
             echo "--------------------------------------------------------------------------------"
-            echo "🚀 PUBLIC DOWNLOAD LINK (No Login Required):"
+            echo "🚀 PUBLIC DOWNLOAD LINK (${{ matrix.desktop | upper }}):"
             echo "$DOWNLOAD_URL"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::GoFile upload failed. Response: $RESPONSE"
+            echo "::warning::BashUpload upload failed."
           fi
 
       - name: Upload ISO artifact (GitHub)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: archcosta-iso
+          name: archcosta-${{ matrix.desktop }}-iso
           path: /tmp/out/*.iso
