@@ -120,24 +120,28 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Upload to up.sb (Public Download)
+      - name: Upload to catbox.moe (Public Download)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
+          FILE_SIZE=$(stat -c%s "$ISO_FILE")
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
           
-          echo "Uploading $ISO_NAME to up.sb..."
-          RESPONSE=$(curl -s https://up.sb -T "$ISO_FILE")
-          DOWNLOAD_URL=$(echo "$RESPONSE" | grep -o 'http://up.sb/[^ ]*' | head -n 1)
+          echo "==> ISO Size: $(du -h "$ISO_FILE" | cut -f1)"
+          echo "==> Uploading $ISO_NAME to catbox.moe (may take a few minutes)..."
           
-          if [ -n "$DOWNLOAD_URL" ]; then
+          # Upload to catbox.moe (permanent storage)
+          RESPONSE=$(curl --connect-timeout 30 --max-time 600 -s -F "reqtype=fileupload" -F "fileToUpload=@${ISO_FILE}" https://catbox.moe/user/api.php)
+          
+          # Check if response is a valid URL
+          if echo "$RESPONSE" | grep -q "^https://"; then
             echo "--------------------------------------------------------------------------------"
             echo "🚀 PUBLIC DOWNLOAD LINK ($UPPER_DE / $KERNEL_NAME):"
-            echo "$DOWNLOAD_URL"
+            echo "$RESPONSE"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::up.sb upload failed. Response: $RESPONSE"
+            echo "::warning::catbox.moe upload failed. Response: $RESPONSE"
           fi
 
       - name: Upload ISO artifact (GitHub)
