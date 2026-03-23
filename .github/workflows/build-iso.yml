@@ -175,22 +175,25 @@ jobs:
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
-          FILE_SIZE=$(stat -c%s "$ISO_FILE")
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
           
           echo "==> ISO Size: $(du -h "$ISO_FILE" | cut -f1)"
-          echo "==> Uploading $ISO_NAME to catbox.moe (may take a few minutes)..."
+          echo "==> Compressing ISO..."
           
-          RESPONSE=$(curl --connect-timeout 30 --max-time 600 -s -F "reqtype=fileupload" -F "fileToUpload=@${ISO_FILE}" https://catbox.moe/user/api.php)
+          # Try file.io (supports up to 2GB)
+          echo "==> Uploading to file.io..."
+          RESPONSE=$(curl --connect-timeout 30 --max-time 600 -s -F "file=@${ISO_FILE}" https://file.io)
           
-          if echo "$RESPONSE" | grep -q "^https://"; then
+          if echo "$RESPONSE" | grep -q "link"; then
+            DOWNLOAD_URL=$(echo "$RESPONSE" | grep -oP '"link":"[^"]+"' | cut -d'"' -f4)
             echo "--------------------------------------------------------------------------------"
             echo "🚀 PUBLIC DOWNLOAD LINK ($UPPER_DE / $KERNEL_NAME):"
-            echo "$RESPONSE"
+            echo "https://file.io/$DOWNLOAD_URL"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::catbox.moe upload failed. Response: $RESPONSE"
+            echo "::warning::file.io upload failed. ISO artifact is available in GitHub Actions."
+            echo "Response: $RESPONSE"
           fi
 
       - name: Upload ISO artifact (GitHub)
