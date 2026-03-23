@@ -79,6 +79,10 @@ jobs:
           EOF
           pacman -Sy --noconfirm
 
+      - name: Setup Mirrorlist
+        run: |
+          cp pacman-mirrorlist /etc/pacman.d/mirrorlist
+
       - name: Install Kernel
         run: |
           case "${{ github.event.inputs.kernel }}" in

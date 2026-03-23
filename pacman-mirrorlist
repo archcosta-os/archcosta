@@ -1,0 +1,20 @@
+##
+## Arch Linux repository mirrorlist
+## Generated for ArchCosta ISO build
+##
+
+## Global options
+Server = https://geo.mirror.pacman.org/archlinux/$repo/os/$arch
+
+## United States
+Server = https://mirror.mmgd.com/archlinux/$repo/os/$arch
+
+## Germany
+Server = https://ftp.halifax.rwth-aachen.de/archlinux/$repo/os/$arch
+Server = https://mirror.unitedcolo.de/archlinux/$repo/os/$arch
+
+## Netherlands
+Server = https://mirror.i3d.net/pub/archlinux/$repo/os/$arch
+
+## United Kingdom  
+Server = https://archlinux.mirror.liteserver.nl/$repo/os/$arch
