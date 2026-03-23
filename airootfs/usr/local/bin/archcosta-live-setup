@@ -1,32 +1,127 @@
 #!/bin/bash
 # archcosta-live-setup: Post-boot configuration for live environment
 
-SESSION=$(cat /var/lib/lightdm/selected-session 2>/dev/null || echo "unknown")
+set -euo pipefail
 
-case "$SESSION" in
-    xfce)
-        if command -v xfconf-query &>/dev/null; then
-            xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s /usr/share/backgrounds/archcosta-default.jpg 2>/dev/null || true
-        fi
-        ;;
-    cinnamon)
-        if command -v gsettings &>/dev/null; then
-            gsettings set org.cinnamon.desktop.background picture-uri "file:///usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
-        fi
-        ;;
-    plasma)
-        if command -v plasasmashell &>/dev/null; then
-            dbus-launch plasma_session_script="file:///usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
-        fi
-        ;;
-    mate)
-        if command -v gsettings &>/dev/null; then
-            gsettings set org.mate.background picture-filename "/usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
-        fi
-        ;;
-esac
+SESSION_FILE="/var/lib/lightdm/selected-session"
+WALLPAPER="/usr/share/backgrounds/archcosta/archcosta-default.jpg"
+LOG_FILE="/var/log/archcosta-live-setup.log"
 
-# Start welcome app if exists
-if [ -f /usr/bin/archcosta-welcome ]; then
-    archcosta-welcome &
-fi
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE" 2>/dev/null || true
+}
+
+# Set wallpaper based on desktop environment
+set_wallpaper() {
+    local session="$1"
+    
+    if [ ! -f "$WALLPAPER" ]; then
+        log "Wallpaper not found: $WALLPAPER"
+        return 0
+    fi
+    
+    log "Setting wallpaper for: $session"
+    
+    case "$session" in
+        xfce)
+            if command -v xfconf-query &>/dev/null; then
+                xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s "$WALLPAPER" 2>/dev/null || true
+                xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/workspace0-image-style -s 5 2>/dev/null || true
+            fi
+            ;;
+        cinnamon)
+            if command -v gsettings &>/dev/null; then
+                gsettings set org.cinnamon.desktop.background picture-uri "file://$WALLPAPER" 2>/dev/null || true
+                gsettings set org.cinnamon.desktop.background picture-options 'zoom' 2>/dev/null || true
+            fi
+            ;;
+        mate)
+            if command -v gsettings &>/dev/null; then
+                gsettings set org.mate.background picture-filename "$WALLPAPER" 2>/dev/null || true
+            fi
+            ;;
+        plasma|plasmawayland)
+            if command -v qdbus &>/dev/null; then
+                # KDE Plasma wallpaper using qdbus
+                qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
+                    var allDesktops = desktops();
+                    for (i=0;i<allDesktops.length;i++) {
+                        d = allDesktops[i];
+                        d.wallpaperPlugin = "org.kde.image";
+                        d.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");
+                        d.writeConfig("Image", "file://'"$WALLPAPER"'");
+                    }
+                ' 2>/dev/null || true
+            fi
+            ;;
+        gnome|gnome-xorg)
+            if command -v gsettings &>/dev/null; then
+                gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER" 2>/dev/null || true
+                gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER" 2>/dev/null || true
+            fi
+            ;;
+        budgie)
+            if command -v gsettings &>/dev/null; then
+                gsettings set com.solus-project.budgie.background picture "$WALLPAPER" 2>/dev/null || true
+            fi
+            ;;
+        lxde)
+            if [ -f "$HOME/.config/pcmanfm/LXDE/desktop-items-0.conf" ]; then
+                sed -i "s|wallpaper=.*|wallpaper=$WALLPAPER|" "$HOME/.config/pcmanfm/LXDE/desktop-items-0.conf" 2>/dev/null || true
+            fi
+            ;;
+        *)
+            log "No wallpaper configuration for: $session"
+            ;;
+    esac
+}
+
+# Start welcome app
+start_welcome() {
+    if [ -f /usr/bin/archcosta-welcome ]; then
+        log "Starting welcome app..."
+        if command -v systemctl &>/dev/null && [ "$(systemctl is-active graphical.target)" = "active" ]; then
+            archcosta-welcome &
+        fi
+    fi
+}
+
+# Configure touchpad
+configure_touchpad() {
+    if [ -d /etc/X11/xorg.conf.d ]; then
+        cat > /etc/X11/xorg.conf.d/90-touchpad.conf << 'EOF'
+Section "InputClass"
+    Identifier "touchpad"
+    Driver "libinput"
+    MatchIsTouchpad "on"
+    Option "Tapping" "on"
+    Option "NaturalScrolling" "on"
+    Option "AccelSpeed" "0.5"
+EndSection
+EOF
+    fi
+}
+
+main() {
+    log "==> ArchCosta Live Setup starting..."
+    
+    # Get current session
+    local session="unknown"
+    if [ -f "$SESSION_FILE" ]; then
+        session=$(cat "$SESSION_FILE" 2>/dev/null || echo "unknown")
+    fi
+    log "Session: $session"
+    
+    # Set wallpaper
+    set_wallpaper "$session"
+    
+    # Configure touchpad
+    configure_touchpad
+    
+    # Start welcome app
+    start_welcome
+    
+    log "==> ArchCosta Live Setup complete!"
+}
+
+main "$@"

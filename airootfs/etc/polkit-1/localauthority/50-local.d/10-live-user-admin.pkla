@@ -1,3 +1,20 @@
-[Configuration]
-AdminIdentities=unix-group:wheel
+# Polkit rules for ArchCosta Live
+# Allows passwordless authentication for live user in wheel group
+
+[Allow live user administration]
 Identity=unix-user:live
+Action=*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+[Allow wheel group sudo without password]
+Identity=unix-group:wheel
+Action=org.freedesktop.systemd1.manage-units
+ResultAny=auth_self_keep
+ResultAny=auth_admin_keep
+
+# Allow Live User to mount drives
+Identity=unix-user:live
+Action=org.freedesktop.udisks2.*
+ResultAny=yes

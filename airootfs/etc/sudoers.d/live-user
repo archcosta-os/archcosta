@@ -1,0 +1,12 @@
+# Sudoers file for ArchCosta Live user
+# Allows passwordless sudo for live user
+
+# Live user can run all commands without password
+live ALL=(ALL) NOPASSWD: ALL
+
+# Allow wheel group members to sudo without password
+%wheel ALL=(ALL) NOPASSWD: ALL
+
+# Disable sudo timeout for live session
+Defaults:live !requiretty
+Defaults:live !timestamp_timeout

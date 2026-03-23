@@ -1,34 +1,121 @@
 #!/bin/bash
 # archcosta-session-detector: Detect available desktop session and configure LightDM
 
-SESSION_FILE="/var/lib/lightdm/selected-session"
+set -euo pipefail
 
-if [ -f "$SESSION_FILE" ]; then
-    exit 0
-fi
+SESSION_FILE="/var/lib/lightdm/selected-session"
+LOG_FILE="/var/log/archcosta-session-detector.log"
+
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE" 2>/dev/null || true
+}
 
 detect_session() {
-    for session in cinnamon plasma mate xfce gnome budgie lxde i3; do
+    log "Detecting available desktop session..."
+    
+    # Priority order for desktop environments
+    local sessions=(
+        "plasma"          # KDE Plasma (X11)
+        "plasmawayland"   # KDE Plasma (Wayland)
+        "cinnamon"        # Cinnamon
+        "mate"            # MATE
+        "xfce"            # XFCE
+        "gnome"            # GNOME
+        "gnome-xorg"       # GNOME on X11
+        "budgie"           # Budgie
+        "lxde"             # LXDE
+        "lxqt"             # LXQt
+        "i3"               # i3
+        "i3-with-shmlog"  # i3 with shmlog
+    )
+    
+    # Check X11 sessions first
+    for session in "${sessions[@]}"; do
         if [ -f "/usr/share/xsessions/${session}.desktop" ]; then
+            log "Found X11 session: $session"
             echo "$session"
             return 0
         fi
     done
-    for session in cinnamon plasma mate xfce gnome budgie lxde i3; do
+    
+    # Check Wayland sessions
+    for session in "${sessions[@]}"; do
         if [ -f "/usr/share/wayland-sessions/${session}.desktop" ]; then
+            log "Found Wayland session: $session"
             echo "$session"
             return 0
         fi
     done
+    
+    # Fallback to xfce
+    log "No known session found, defaulting to xfce"
     echo "xfce"
     return 1
 }
 
-SESSION=$(detect_session)
+configure_lightdm() {
+    local session="$1"
+    log "Configuring LightDM for session: $session"
+    
+    # Map session names to LightDM session identifiers
+    case "$session" in
+        plasma|plasmawayland)
+            SESSION_ID="plasma"
+            ;;
+        cinnamon)
+            SESSION_ID="cinnamon"
+            ;;
+        mate)
+            SESSION_ID="mate"
+            ;;
+        xfce)
+            SESSION_ID="xfce"
+            ;;
+        gnome|gnome-xorg)
+            SESSION_ID="gnome"
+            ;;
+        budgie)
+            SESSION_ID="budgie-desktop"
+            ;;
+        lxde)
+            SESSION_ID="LXDE"
+            ;;
+        lxqt)
+            SESSION_ID="lxqt"
+            ;;
+        i3|i3-with-shmlog)
+            SESSION_ID="i3"
+            ;;
+        *)
+            SESSION_ID="$session"
+            ;;
+    esac
+    
+    # Update LightDM config
+    sed -i "s/^autologin-session=.*/autologin-session=$SESSION_ID/" /etc/lightdm/lightdm.conf 2>/dev/null || true
+    sed -i "s/^user-session=.*/user-session=$SESSION_ID/" /etc/lightdm/lightdm.conf 2>/dev/null || true
+    
+    log "LightDM configured with session: $SESSION_ID"
+}
 
-sed -i "s/^autologin-session=.*/autologin-session=$SESSION/" /etc/lightdm/lightdm.conf
+main() {
+    # Skip if already configured
+    if [ -f "$SESSION_FILE" ] && [ -s "$SESSION_FILE" ]; then
+        log "Session already configured: $(cat "$SESSION_FILE")"
+        exit 0
+    fi
+    
+    # Detect session
+    SESSION=$(detect_session)
+    
+    # Configure LightDM
+    configure_lightdm "$SESSION"
+    
+    # Save session
+    mkdir -p /var/lib/lightdm
+    echo "$SESSION" > "$SESSION_FILE"
+    
+    log "Session detection complete: $SESSION"
+}
 
-mkdir -p /var/lib/lightdm
-echo "$SESSION" > "$SESSION_FILE"
-
-exit 0
+main "$@"

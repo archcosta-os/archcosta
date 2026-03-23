@@ -19,6 +19,7 @@ file_permissions=(
     ["/etc/gshadow"]="0:0:400"
     ["/etc/passwd"]="0:0:644"
     ["/etc/group"]="0:0:644"
+    ["/etc/sudoers.d/live-user"]="0:0:440"
     ["/root"]="0:0:750"
     ["/root/.automated_script.sh"]="0:0:755"
     ["/root/customize_airootfs.sh"]="0:0:755"
