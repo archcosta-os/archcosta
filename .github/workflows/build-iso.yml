@@ -153,8 +153,8 @@ jobs:
           # Add host
           ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
 
-          # Write key (IMPORTANT)
-          printf "%s" "$SOURCEFORGE_SSH_KEY" > ~/.ssh/sourceforge_rsync
+          # Write key (IMPORTANT - decode base64)
+          echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_rsync
           chmod 600 ~/.ssh/sourceforge_rsync
 
           # Test connection (optional debug)
