@@ -134,7 +134,7 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Upload to catbox.moe (Public Download)
+      - name: Upload to transfer.sh (Fast Upload)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
@@ -142,21 +142,20 @@ jobs:
           KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
           
           echo "==> ISO Size: $(du -h "$ISO_FILE" | cut -f1)"
-          echo "==> Compressing ISO..."
+          echo "==> Uploading to transfer.sh..."
           
-          # Try file.io (supports up to 2GB)
-          echo "==> Uploading to file.io..."
-          RESPONSE=$(curl --connect-timeout 30 --max-time 600 -s -F "file=@${ISO_FILE}" https://file.io)
+          # Upload to transfer.sh (fast, 10GB limit, 14 days retention)
+          RESPONSE=$(curl --connect-timeout 60 --max-time 600 -s -F "file=@${ISO_FILE}" https://transfer.sh)
           
-          if echo "$RESPONSE" | grep -q "link"; then
-            DOWNLOAD_URL=$(echo "$RESPONSE" | grep -oP '"link":"[^"]+"' | cut -d'"' -f4)
+          if echo "$RESPONSE" | grep -q "^https://"; then
             echo "--------------------------------------------------------------------------------"
             echo "🚀 PUBLIC DOWNLOAD LINK ($UPPER_DE / $KERNEL_NAME):"
-            echo "https://file.io/$DOWNLOAD_URL"
+            echo "$RESPONSE"
             echo "--------------------------------------------------------------------------------"
           else
-            echo "::warning::file.io upload failed. ISO artifact is available in GitHub Actions."
+            echo "::warning::transfer.sh upload failed."
             echo "Response: $RESPONSE"
+            echo "Download from GitHub Actions artifacts instead."
           fi
 
       - name: Upload ISO artifact (GitHub)
