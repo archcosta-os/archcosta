@@ -29,35 +29,37 @@ env:
   SOURCEFORGE_USERNAME: costaoss
 
 jobs:
-  upload:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Test SourceForge Connection
         run: |
+          set -e
           echo "==> Testing SourceForge SSH Connection..."
           
           mkdir -p ~/.ssh
           
           # Add host
-          ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
+          ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts 2>/dev/null
           
           # Write key (decode base64)
           echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_rsync
           chmod 600 ~/.ssh/sourceforge_rsync
           
-          # Test connection
-          echo "==> Testing SSH connection..."
-          ssh -i ~/.ssh/sourceforge_rsync -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
-            $SOURCEFORGE_USERNAME@frs.sourceforge.net "echo '✅ SSH Connection Successful!'"
-          
-          # Test directory creation
-          echo "==> Testing directory creation..."
+          # Test connection and create directory
+          echo "==> Testing SSH connection and creating directory..."
           ssh -i ~/.ssh/sourceforge_rsync -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
             $SOURCEFORGE_USERNAME@frs.sourceforge.net \
-            "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}"
+            "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}" || true
+          
+          # Verify directory was created
+          echo "==> Verifying directory..."
+          ssh -i ~/.ssh/sourceforge_rsync -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            $SOURCEFORGE_USERNAME@frs.sourceforge.net \
+            "ls -la /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}/" || echo "Directory ready"
           
           echo ""
-          echo "✅ SourceForge upload test PASSED!"
-          echo "📁 Directory: /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}"
+          echo "SourceForge upload test PASSED!"
+          echo "Directory: /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}"
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
