@@ -1,0 +1,34 @@
+#!/bin/bash
+# archcosta-session-detector: Detect available desktop session and configure LightDM
+
+SESSION_FILE="/var/lib/lightdm/selected-session"
+
+if [ -f "$SESSION_FILE" ]; then
+    exit 0
+fi
+
+detect_session() {
+    for session in cinnamon plasma mate xfce gnome budgie lxde i3; do
+        if [ -f "/usr/share/xsessions/${session}.desktop" ]; then
+            echo "$session"
+            return 0
+        fi
+    done
+    for session in cinnamon plasma mate xfce gnome budgie lxde i3; do
+        if [ -f "/usr/share/wayland-sessions/${session}.desktop" ]; then
+            echo "$session"
+            return 0
+        fi
+    done
+    echo "xfce"
+    return 1
+}
+
+SESSION=$(detect_session)
+
+sed -i "s/^autologin-session=.*/autologin-session=$SESSION/" /etc/lightdm/lightdm.conf
+
+mkdir -p /var/lib/lightdm
+echo "$SESSION" > "$SESSION_FILE"
+
+exit 0

@@ -1,8 +1,30 @@
 #!/bin/bash
 # archcosta-live-setup: Post-boot configuration for live environment
 
-# Set default wallpaper for live session
-xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s /usr/share/backgrounds/archcosta-default.jpg
+SESSION=$(cat /var/lib/lightdm/selected-session 2>/dev/null || echo "unknown")
+
+case "$SESSION" in
+    xfce)
+        if command -v xfconf-query &>/dev/null; then
+            xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s /usr/share/backgrounds/archcosta-default.jpg 2>/dev/null || true
+        fi
+        ;;
+    cinnamon)
+        if command -v gsettings &>/dev/null; then
+            gsettings set org.cinnamon.desktop.background picture-uri "file:///usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
+        fi
+        ;;
+    plasma)
+        if command -v plasasmashell &>/dev/null; then
+            dbus-launch plasma_session_script="file:///usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
+        fi
+        ;;
+    mate)
+        if command -v gsettings &>/dev/null; then
+            gsettings set org.mate.background picture-filename "/usr/share/backgrounds/archcosta-default.jpg" 2>/dev/null || true
+        fi
+        ;;
+esac
 
 # Start welcome app if exists
 if [ -f /usr/bin/archcosta-welcome ]; then

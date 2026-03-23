@@ -1,0 +1,12 @@
+[Unit]
+Description=ArchCosta Session Detector
+After=lightdm.service
+Before=lightdm-autologin.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/archcosta-session-detector
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

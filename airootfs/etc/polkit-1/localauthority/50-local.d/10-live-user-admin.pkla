@@ -1,0 +1,3 @@
+[Configuration]
+AdminIdentities=unix-group:wheel
+Identity=unix-user:live

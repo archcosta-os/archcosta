@@ -17,8 +17,12 @@ file_permissions=(
   ["/etc/shadow"]="0:0:400"
   ["/root"]="0:0:750"
   ["/root/.automated_script.sh"]="0:0:755"
+  ["/root/customize_airootfs.sh"]="0:0:755"
   ["/usr/local/bin/archcosta-installer"]="0:0:755"
   ["/usr/local/bin/archcosta-live-setup"]="0:0:755"
+  ["/usr/local/bin/archcosta-session-detector"]="0:0:755"
   ["/usr/local/bin/linexin-sound-fix-usb-dac"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
+  ["/etc/systemd/system/archcosta-session-detector.service"]="0:0:644"
+  ["/etc/polkit-1/localauthority/50-local.d/10-live-user-admin.pkla"]="0:0:644"
 )
