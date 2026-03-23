@@ -56,6 +56,9 @@ jobs:
       - name: Setup Mirrorlist First
         run: |
           cp pacman-mirrorlist /etc/pacman.d/mirrorlist
+          rm -f /var/lib/pacman/db.lck
+          rm -rf /var/lib/pacman/sync/*
+          rm -rf /var/cache/pacman/pkg/*
           cat /etc/pacman.d/mirrorlist
 
       - name: Setup Build Environment
