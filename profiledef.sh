@@ -2,7 +2,7 @@
 # shellcheck disable=SC2034
 
 iso_name="archcosta"
-iso_label="ARCHCOSTA_$(date +%Y%m%d%H%M)"
+iso_label="ARCHCOSTA"
 iso_publisher="ArchCosta <https://github.com/archcosta-os>"
 iso_application="ArchCosta installation ISO"
 iso_version="rolling"
