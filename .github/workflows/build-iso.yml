@@ -125,17 +125,6 @@ jobs:
 
       - name: Build ISO
         run: |
-          # Copy CPU microcode to airootfs/boot for bootloader (ISO structure: /arch/boot/)
-          mkdir -p airootfs/boot
-          if [ -f "/usr/lib/firmware/intel-ucode.img" ]; then
-            cp -f /usr/lib/firmware/intel-ucode.img airootfs/boot/intel-ucode.img
-            echo "Copied intel-ucode.img"
-          fi
-          if [ -f "/usr/lib/firmware/amd-ucode.img" ]; then
-            cp -f /usr/lib/firmware/amd-ucode.img airootfs/boot/amd-ucode.img
-            echo "Copied amd-ucode.img"
-          fi
-          
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
