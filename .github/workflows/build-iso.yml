@@ -138,49 +138,34 @@ jobs:
         if: success()
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
-          ISO_NAME=$(basename "$ISO_FILE")
           SHA256_FILE="${ISO_FILE}.sha256"
 
-          UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
-          KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
+          echo "==> ISO File: $(basename "$ISO_FILE")"
 
-          echo "==> ISO File: $ISO_NAME"
-          echo "==> Size: $(du -h "$ISO_FILE" | cut -f1)"
-          echo "==> Project: $SOURCEFORGE_PROJECT"
-
-          # Setup SSH
           mkdir -p ~/.ssh
 
-          # Add known host
+          # Add host
           ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
 
-          # Write private key
-          echo "$SOURCEFORGE_SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          # Write key (IMPORTANT)
+          printf "%s" "$SOURCEFORGE_SSH_KEY" > ~/.ssh/sourceforge_rsync
+          chmod 600 ~/.ssh/sourceforge_rsync
+
+          # Test connection (optional debug)
+          ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
+            $SOURCEFORGE_USERNAME@frs.sourceforge.net "echo Connected"
 
           # Create directory
-          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
-            "$SOURCEFORGE_USERNAME@frs.sourceforge.net" \
+          ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
+            $SOURCEFORGE_USERNAME@frs.sourceforge.net \
             "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}" || true
 
-          # Upload files
-          echo "==> Uploading ISO to SourceForge..."
+          # Upload
           rsync -avz --progress \
-            -e "ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            -e "ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             "$ISO_FILE" \
             "$SHA256_FILE" \
             "$SOURCEFORGE_USERNAME@frs.sourceforge.net:/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
-
-          echo "================================================================================"
-          echo "✅ Build & Upload Complete!"
-          echo "================================================================================"
-          echo "Edition:     $UPPER_DE"
-          echo "Kernel:      $KERNEL_NAME"
-          echo "ISO Size:   $(du -h "$ISO_FILE" | cut -f1)"
-          echo ""
-          echo "📥 Download:"
-          echo "https://sourceforge.net/projects/$SOURCEFORGE_PROJECT/files/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
-          echo "================================================================================"
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
           SOURCEFORGE_USERNAME: costaoss
