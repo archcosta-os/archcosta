@@ -144,32 +144,37 @@ jobs:
           ISO_FILE=$(ls /tmp/out/*.iso)
           ISO_NAME=$(basename "$ISO_FILE")
           SHA256_FILE="${ISO_FILE}.sha256"
+
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
-          
+
           echo "==> ISO File: $ISO_NAME"
           echo "==> Size: $(du -h "$ISO_FILE" | cut -f1)"
           echo "==> Project: $SOURCEFORGE_PROJECT"
-          
-          # Set up SSH for SourceForge
+
+          # Setup SSH
           mkdir -p ~/.ssh
-          ssh-keyscan -t ssh-ed25519 frs.sourceforge.net > ~/.ssh/known_hosts
-          eval $(ssh-agent)
-          ssh-add - <<< "$SOURCEFORGE_SSH_KEY"
-          
-          # Create directory structure on SourceForge
-          SSH_CMD="ssh -o StrictHostKeyChecking=no"
-          
-          # Create directory if not exists
-          $SSH_CMD "$SOURCEFORGE_PROJECT@frs.sourceforge.net" "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}" 2>/dev/null || true
-          
-          # Upload ISO and hash file
+
+          # Add known host
+          ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
+
+          # Write private key
+          echo "$SOURCEFORGE_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          # Create directory
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
+            "$SOURCEFORGE_PROJECT@frs.sourceforge.net" \
+            "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}" || true
+
+          # Upload files
           echo "==> Uploading ISO to SourceForge..."
-          rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no" \
+          rsync -avz --progress \
+            -e "ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             "$ISO_FILE" \
             "$SHA256_FILE" \
             "$SOURCEFORGE_PROJECT@frs.sourceforge.net:/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
-          
+
           echo "================================================================================"
           echo "✅ Build & Upload Complete!"
           echo "================================================================================"
@@ -177,11 +182,12 @@ jobs:
           echo "Kernel:      $KERNEL_NAME"
           echo "ISO Size:   $(du -h "$ISO_FILE" | cut -f1)"
           echo ""
-          echo "📥 Download from SourceForge:"
-          echo "   https://sourceforge.net/projects/$SOURCEFORGE_PROJECT/files/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
+          echo "📥 Download:"
+          echo "https://sourceforge.net/projects/$SOURCEFORGE_PROJECT/files/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
           echo "================================================================================"
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
+          SOURCEFORGE_PROJECT: archcosta
 
       - name: Display Build Results
         if: failure()
