@@ -87,11 +87,7 @@ mousepad
 # Installer
 calamares
 calamares-settings-arch
-
-# Linexin Tools (Selected)
-linexin-center
-linexin-updater
-linexin-desktop-presets
+archcosta-installer
 
 # ArchCosta Core & Tools
 archcosta-bash-shared
