@@ -122,6 +122,11 @@ jobs:
             *) KERNEL_PKGS="linux linux-headers" ;;
           esac
           pacman -S --noconfirm $KERNEL_PKGS
+          
+          # Rebuild initramfs with archiso hook for live boot
+          echo "==> Rebuilding initramfs with archiso hook..."
+          cp mkinitcpio.conf /etc/mkinitcpio.conf
+          mkinitcpio -P
 
       - name: Build ISO
         run: |
