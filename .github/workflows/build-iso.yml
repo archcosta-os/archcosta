@@ -98,7 +98,7 @@ jobs:
             linux-lts) KERNEL_PKGS="linux-lts linux-lts-headers" ;;
             *) KERNEL_PKGS="linux linux-headers" ;;
           esac
-          pacman -S --noconfirm --skippgpcheck $KERNEL_PKGS
+          pacman -S --noconfirm $KERNEL_PKGS
 
       - name: Configure Kernel-Specific Settings
         run: |
