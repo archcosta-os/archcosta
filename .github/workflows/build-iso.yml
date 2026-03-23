@@ -125,24 +125,11 @@ jobs:
 
       - name: Build ISO
         run: |
-          KERNEL="${{ github.event.inputs.kernel }}"
-          ARCH="$(uname -m)"
+          echo "==> packages.x86_64 kernel entries:"
+          grep -E "^linux" packages.x86_64
           
-          echo "==> Kernel: $KERNEL, Arch: $ARCH"
-          
-          # Generate initramfs if not exists
-          if [ ! -f "/boot/initramfs-${KERNEL}.img" ]; then
-            echo "==> Generating initramfs for $KERNEL..."
-            mkinitcpio -P -k "/boot/vmlinuz-${KERNEL}" -c /etc/mkinitcpio.conf -g "/boot/initramfs-${KERNEL}.img" 2>/dev/null || true
-          fi
-          
-          # Copy kernel and initramfs to airootfs/boot for archiso to include
-          mkdir -p airootfs/boot/${ARCH}
-          cp -f /boot/vmlinuz-${KERNEL} airootfs/boot/${ARCH}/vmlinuz-${KERNEL}
-          cp -f /boot/initramfs-${KERNEL}.img airootfs/boot/${ARCH}/initramfs-${KERNEL}.img
-          
-          echo "==> Copied kernel files:"
-          ls -la airootfs/boot/${ARCH}/
+          echo "==> Verifying kernel installation:"
+          ls -la /boot/vmlinuz-* /boot/initramfs-*.img 2>/dev/null || echo "No kernel files found"
           
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
