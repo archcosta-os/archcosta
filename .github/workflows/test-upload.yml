@@ -1,0 +1,63 @@
+name: Test SourceForge Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      desktop:
+        description: 'Desktop Environment'
+        required: true
+        default: 'xfce'
+        type: choice
+        options:
+          - xfce
+          - plasma
+          - cinnamon
+          - mate
+      kernel:
+        description: 'Kernel'
+        required: true
+        default: 'linux'
+        type: choice
+        options:
+          - linux
+          - linux-zen
+          - linux-lts
+          - linux-cachyos
+
+env:
+  SOURCEFORGE_PROJECT: archcosta
+  SOURCEFORGE_USERNAME: costaoss
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test SourceForge Connection
+        run: |
+          echo "==> Testing SourceForge SSH Connection..."
+          
+          mkdir -p ~/.ssh
+          
+          # Add host
+          ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
+          
+          # Write key (decode base64)
+          echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_rsync
+          chmod 600 ~/.ssh/sourceforge_rsync
+          
+          # Test connection
+          echo "==> Testing SSH connection..."
+          ssh -i ~/.ssh/sourceforge_rsync -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            $SOURCEFORGE_USERNAME@frs.sourceforge.net "echo '✅ SSH Connection Successful!'"
+          
+          # Test directory creation
+          echo "==> Testing directory creation..."
+          ssh -i ~/.ssh/sourceforge_rsync -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            $SOURCEFORGE_USERNAME@frs.sourceforge.net \
+            "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}"
+          
+          echo ""
+          echo "✅ SourceForge upload test PASSED!"
+          echo "📁 Directory: /home/frs/project/$SOURCEFORGE_PROJECT/${{ inputs.desktop }}-${{ inputs.kernel }}"
+        env:
+          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
