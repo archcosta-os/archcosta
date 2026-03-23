@@ -163,6 +163,30 @@ jobs:
             echo "❌ ISO build failed - check build logs"
           fi
 
+      - name: Upload to GitHub Release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          files: /tmp/out/*.iso
+          tag: iso-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-${{ github.run_number }}
+          name: ArchCosta ${{ matrix.desktop }} ${{ github.event.inputs.kernel }} (Build #${{ github.run_number }})
+          body: |
+            ArchCosta OS - ${{ matrix.desktop }} Edition with ${{ github.event.inputs.kernel }} kernel
+            
+            **Build:** #${{ github.run_number }}
+            **Kernel:** ${{ github.event.inputs.kernel }}
+            **Desktop:** ${{ matrix.desktop }}
+            **Date:** ${{ github.event.head_commit.timestamp }}
+            
+            Download this ISO and flash it to a USB drive using tools like:
+            - balenaEtcher
+            - Rufus
+            - dd command
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload ISO artifact (GitHub)
         if: always()
         uses: actions/upload-artifact@v4
