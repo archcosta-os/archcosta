@@ -53,6 +53,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Mirrorlist First
+        run: |
+          cp pacman-mirrorlist /etc/pacman.d/mirrorlist
+          cat /etc/pacman.d/mirrorlist
+
+      - name: Setup Build Environment
+        run: |
+          pacman-key --init
+          pacman-key --populate archlinux
+          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
+
       - name: Cache Pacman Packages
         uses: actions/cache@v4
         with:
@@ -60,12 +71,6 @@ jobs:
           key: ${{ runner.os }}-pacman-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-${{ hashFiles('packages.x86_64') }}
           restore-keys: |
             ${{ runner.os }}-pacman-
-
-      - name: Setup Build Environment
-        run: |
-          pacman-key --init
-          pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
 
       - name: Add CachyOS Repository (for linux-cachyos)
         if: "${{ github.event.inputs.kernel == 'linux-cachyos' }}"
@@ -78,10 +83,6 @@ jobs:
           SigLevel = Never
           EOF
           pacman -Sy --noconfirm
-
-      - name: Setup Mirrorlist
-        run: |
-          cp pacman-mirrorlist /etc/pacman.d/mirrorlist
 
       - name: Install Kernel
         run: |
