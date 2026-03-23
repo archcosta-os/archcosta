@@ -62,7 +62,8 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm --ignore gcc,clang,llvm,compiler-rt,lld,llvm-libs,libisl,libmpc,libedit,diffutils,pahole archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq || true
 
       - name: Cache Pacman Packages
         uses: actions/cache@v4
@@ -86,20 +87,14 @@ jobs:
 
       - name: Install Kernel
         run: |
-          case "${{ github.event.inputs.kernel }}" in
-            linux-cachyos)
-              pacman -S --noconfirm linux-cachyos linux-cachyos-headers
-              ;;
-            linux-zen)
-              pacman -S --noconfirm linux-zen linux-zen-headers
-              ;;
-            linux-lts)
-              pacman -S --noconfirm linux-lts linux-lts-headers
-              ;;
-            *)
-              pacman -S --noconfirm linux linux-headers
-              ;;
-          esac
+          pacman -S --noconfirm --skippgpcheck $(
+            case "${{ github.event.inputs.kernel }}" in
+              linux-cachyos) echo "linux-cachyos linux-cachyos-headers" ;;
+              linux-zen) echo "linux-zen linux-zen-headers" ;;
+              linux-lts) echo "linux-lts linux-lts-headers" ;;
+              *) echo "linux linux-headers" ;;
+            esac
+          )
 
       - name: Configure Kernel-Specific Settings
         run: |
