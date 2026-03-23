@@ -53,21 +53,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Mirrorlist First
+      - name: Clear Pacman Cache
         run: |
-          cp pacman-mirrorlist /etc/pacman.d/mirrorlist
           rm -f /var/lib/pacman/db.lck
           rm -rf /var/lib/pacman/sync/*
           rm -rf /var/cache/pacman/pkg/*
           sed -i 's/SigLevel.*/SigLevel = Never/' /etc/pacman.conf
+
+      - name: Setup Mirrorlist
+        run: |
+          cp pacman-mirrorlist /etc/pacman.d/mirrorlist
           cat /etc/pacman.d/mirrorlist
 
-      - name: Setup Build Environment
+      - name: Sync Pacman
         run: |
           pacman-key --init
           pacman-key --populate archlinux
           pacman -Sy --noconfirm
-          pacman -S --noconfirm --ignore gcc,clang,llvm,compiler-rt,lld,llvm-libs,libisl,libmpc,libedit,diffutils,pahole archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq || true
 
       - name: Cache Pacman Packages
         uses: actions/cache@v4
@@ -77,9 +79,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pacman-
 
+      - name: Setup Build Environment
+        run: |
+          pacman -S --noconfirm archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq
+
       - name: Add CachyOS Repository (for linux-cachyos)
         if: "${{ github.event.inputs.kernel == 'linux-cachyos' }}"
         run: |
+          rm -rf /var/lib/pacman/sync/cachyos
           cat >> /etc/pacman.conf << 'EOF'
           
           # CachyOS Repository
@@ -87,7 +94,7 @@ jobs:
           Server = https://mirror.cachyos.org/repo/x86_64/cachyos
           SigLevel = Never
           EOF
-          pacman -Sy --noconfirm
+          pacman -Sy --noconfirm cachyos
 
       - name: Install Kernel
         run: |
