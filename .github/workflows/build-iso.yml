@@ -164,7 +164,7 @@ jobs:
 
           # Create directory
           ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
-            "$SOURCEFORGE_PROJECT@frs.sourceforge.net" \
+            "$SOURCEFORGE_USERNAME@frs.sourceforge.net" \
             "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}" || true
 
           # Upload files
@@ -173,7 +173,7 @@ jobs:
             -e "ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             "$ISO_FILE" \
             "$SHA256_FILE" \
-            "$SOURCEFORGE_PROJECT@frs.sourceforge.net:/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
+            "$SOURCEFORGE_USERNAME@frs.sourceforge.net:/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
 
           echo "================================================================================"
           echo "✅ Build & Upload Complete!"
@@ -187,6 +187,7 @@ jobs:
           echo "================================================================================"
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
+          SOURCEFORGE_USERNAME: costaoss
           SOURCEFORGE_PROJECT: archcosta
 
       - name: Display Build Results
