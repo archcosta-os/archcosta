@@ -111,29 +111,7 @@ jobs:
         run: |
           KERNEL="${{ github.event.inputs.kernel }}"
           
-          # Set kernel names for file replacements
-          case "$KERNEL" in
-            linux-zen)
-              VMLINUZ="vmlinuz-linux-zen"
-              INITRAMFS="initramfs-linux-zen.img"
-              ;;
-            linux-lts)
-              VMLINUZ="vmlinuz-linux-lts"
-              INITRAMFS="initramfs-linux-lts.img"
-              ;;
-            linux-cachyos)
-              VMLINUZ="vmlinuz-linux-cachyos"
-              INITRAMFS="initramfs-linux-cachyos.img"
-              ;;
-            *)
-              VMLINUZ="vmlinuz-linux"
-              INITRAMFS="initramfs-linux.img"
-              ;;
-          esac
-          
           echo "==> Kernel: $KERNEL"
-          echo "==> VMLinuz: $VMLINUZ"
-          echo "==> Initramfs: $INITRAMFS"
           
           # Update packages.x86_64 - replace default kernel with selected one
           sed -i 's/^linux$/'"$KERNEL"'/' packages.x86_64
@@ -144,24 +122,9 @@ jobs:
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           sed -i "s/ARCHCOSTA_/ARCHCOSTA_${UPPER_DE}_/" profiledef.sh
           
-          # Update syslinux/syslinux.cfg - kernel file names
-          sed -i "s/vmlinuz-linux/$VMLINUZ/g" syslinux/syslinux.cfg
-          sed -i "s/initramfs-linux.img/$INITRAMFS/g" syslinux/syslinux.cfg
-          
-          # Update efiboot entries - kernel file names
-          sed -i "s|vmlinuz-linux|$VMLINUZ|g" efiboot/loader/entries/archcosta.conf
-          sed -i "s|initramfs-linux.img|$INITRAMFS|g" efiboot/loader/entries/archcosta.conf
-          sed -i "s|vmlinuz-linux|$VMLINUZ|g" efiboot/loader/entries/archcosta-accessibility.conf
-          sed -i "s|initramfs-linux.img|$INITRAMFS|g" efiboot/loader/entries/archcosta-accessibility.conf
-          
-          # Remove other desktop meta-packages
-          DESKTOPS=("archcosta-xfce" "archcosta-plasma" "archcosta-cinnamon" "archcosta-mate")
-          CURRENT="archcosta-${{ matrix.desktop }}"
-          for d in "${DESKTOPS[@]}"; do
-            if [ "$d" != "$CURRENT" ]; then
-              sed -i "/$d/d" packages.x86_64
-            fi
-          done
+          # Copy kernel-specific bootloader configs
+          cp syslinux/syslinux-${KERNEL}.cfg syslinux/syslinux.cfg
+          cp efiboot/loader/entries/archcosta-${KERNEL}.conf efiboot/loader/entries/archcosta.conf
           
           echo "==> Updated packages.x86_64:"
           grep -E "^linux" packages.x86_64 || echo "No kernel found"
