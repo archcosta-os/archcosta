@@ -134,28 +134,33 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Upload to transfer.sh (Fast Upload)
+      - name: Display Build Results
         run: |
-          ISO_FILE=$(ls /tmp/out/*.iso)
-          ISO_NAME=$(basename "$ISO_FILE")
+          ISO_FILE=$(ls /tmp/out/*.iso 2>/dev/null || echo "none")
+          ISO_NAME=$(basename "$ISO_FILE" 2>/dev/null || echo "N/A")
           UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
           KERNEL_NAME=$(echo "${{ github.event.inputs.kernel }}" | tr '[:lower:]' '[:upper:]')
           
-          echo "==> ISO Size: $(du -h "$ISO_FILE" | cut -f1)"
-          echo "==> Uploading to transfer.sh..."
-          
-          # Upload to transfer.sh (fast, 10GB limit, 14 days retention)
-          RESPONSE=$(curl --connect-timeout 60 --max-time 600 -s -F "file=@${ISO_FILE}" https://transfer.sh)
-          
-          if echo "$RESPONSE" | grep -q "^https://"; then
-            echo "--------------------------------------------------------------------------------"
-            echo "🚀 PUBLIC DOWNLOAD LINK ($UPPER_DE / $KERNEL_NAME):"
-            echo "$RESPONSE"
-            echo "--------------------------------------------------------------------------------"
+          if [ -f "$ISO_FILE" ]; then
+            echo "================================================================================"
+            echo "✅ BUILD SUCCESSFUL!"
+            echo "================================================================================"
+            echo "Edition:     $UPPER_DE"
+            echo "Kernel:      $KERNEL_NAME"
+            echo "ISO Size:    $(du -h "$ISO_FILE" | cut -f1)"
+            echo "ISO Path:    $ISO_FILE"
+            echo "================================================================================"
+            echo ""
+            echo "📥 DOWNLOAD OPTIONS:"
+            echo "   1. GitHub Actions Artifacts (fastest, expires with repo)"
+            echo "   2. Run locally: gh run download"
+            echo ""
+            echo "💡 To download from Actions:"
+            echo "   gh run view <run-id> --json artifacts --jq '.[].name'"
+            echo "   gh run download <artifact-id>"
+            echo "================================================================================"
           else
-            echo "::warning::transfer.sh upload failed."
-            echo "Response: $RESPONSE"
-            echo "Download from GitHub Actions artifacts instead."
+            echo "❌ ISO build failed - check build logs"
           fi
 
       - name: Upload ISO artifact (GitHub)
