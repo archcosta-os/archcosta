@@ -125,6 +125,10 @@ jobs:
 
       - name: Build ISO
         run: |
+          # Copy microcode to /boot for bootloader
+          chmod +x build-prep.sh
+          ./build-prep.sh
+          
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 

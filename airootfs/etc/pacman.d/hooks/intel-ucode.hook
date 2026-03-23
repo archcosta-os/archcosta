@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = intel-ucode
+
+[Action]
+Description = Copying Intel microcode to /boot...
+When = PostTransaction
+Exec = /usr/bin/cp -f /usr/lib/firmware/intel-ucode.img /boot/intel-ucode.img

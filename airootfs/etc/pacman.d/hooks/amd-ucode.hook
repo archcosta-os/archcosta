@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = amd-ucode
+
+[Action]
+Description = Copying AMD microcode to /boot...
+When = PostTransaction
+Exec = /usr/bin/cp -f /usr/lib/firmware/amd-ucode.img /boot/amd-ucode.img

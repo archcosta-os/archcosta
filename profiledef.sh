@@ -32,4 +32,5 @@ file_permissions=(
     ["/etc/systemd/system/archcosta-session-detector.service"]="0:0:644"
     ["/etc/systemd/system/getty@tty1.service.d/autologin.conf"]="0:0:644"
     ["/etc/polkit-1/localauthority/50-local.d/10-live-user-admin.pkla"]="0:0:644"
+    ["/build-prep.sh"]="0:0:755"
 )
