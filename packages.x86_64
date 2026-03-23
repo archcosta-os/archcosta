@@ -109,3 +109,14 @@ archcosta-xfce
 archcosta-plasma
 archcosta-cinnamon
 archcosta-mate
+
+# Tiling Window Managers (lightweight alternatives)
+archcosta-i3wm
+archcosta-bspwm
+archcosta-qtile
+archcosta-hyprland
+
+# ArchCosta Utilities
+archcosta-libs
+archcosta-health
+archcosta-update
