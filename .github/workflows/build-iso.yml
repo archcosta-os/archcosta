@@ -59,6 +59,7 @@ jobs:
           rm -f /var/lib/pacman/db.lck
           rm -rf /var/lib/pacman/sync/*
           rm -rf /var/cache/pacman/pkg/*
+          sed -i 's/SigLevel.*/SigLevel = Never/' /etc/pacman.conf
           cat /etc/pacman.d/mirrorlist
 
       - name: Setup Build Environment
