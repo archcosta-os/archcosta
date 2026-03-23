@@ -1,0 +1,6 @@
+# Bootstrap packages for ArchCosta ISO build
+# These packages are used during the initial bootstrap phase
+# and are installed before the main packages.x86_64
+
+base
+archiso

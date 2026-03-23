@@ -1,12 +1,17 @@
 [Unit]
 Description=ArchCosta Session Detector
-After=lightdm.service
-Before=lightdm-autologin.service
+Documentation=https://github.com/archcosta-os/archcosta
+After=systemd-user-sessions.service
+After=plymouth-quit.service
+Before=lightdm.service
+Conflicts=plymouth-quit-wait.service
 
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/archcosta-session-detector
 RemainAfterExit=yes
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

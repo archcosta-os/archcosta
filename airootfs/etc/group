@@ -1,7 +1,9 @@
 root:x:0:root
-wheel:x:998:live
-video:x:986:live
-audio:x:995:live
-live:x:1000:
-nopasswdlogin:x:966:live
+live:x:1000:live
+wheel:x:10:root,live
+video:x:86:live
+audio:x:87:live
+storage:x:93:live
+network:x:99:live
+power:x:98:live
 nopasswdlogin:x:966:live

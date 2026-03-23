@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# choose-mirror - Interactively select a fast Arch Linux mirror
+
+set -euo pipefail
+
+PACMAN_MIRRORLIST="/etc/pacman.d/mirrorlist"
+BACKUP_MIRRORLIST="/etc/pacman.d/mirrorlist.backup"
+
+show_mirrors() {
+    echo "Available Arch Linux mirrors:"
+    echo "============================"
+    grep -m 20 "^Server" "$PACMAN_MIRRORLIST" | nl -v 0
+    echo ""
+}
+
+select_mirror() {
+    local choice
+    
+    show_mirrors
+    
+    read -p "Select a mirror (0 to cancel): " choice
+    
+    if [ "$choice" = "0" ] || [ -z "$choice" ]; then
+        echo "Keeping current mirror."
+        return
+    fi
+    
+    local mirror=$(grep "^Server" "$PACMAN_MIRRORLIST" | sed -n "$((choice + 1))p" | sed 's/Server = //')
+    
+    if [ -n "$mirror" ]; then
+        echo "Selected: $mirror"
+        # Backup and update
+        cp "$PACMAN_MIRRORLIST" "$BACKUP_MIRRORLIST"
+        sed -i '1,/^Server/d' "$PACMAN_MIRRORLIST"
+        echo "Server = $mirror" > "$PACMAN_MIRRORLIST"
+        cat "$BACKUP_MIRRORLIST" >> "$PACMAN_MIRRORLIST"
+        echo "Mirror updated successfully!"
+    else
+        echo "Invalid selection."
+    fi
+}
+
+rank_mirrors() {
+    echo "Ranking mirrors by speed..."
+    if command -v reflector &>/dev/null; then
+        cp "$PACMAN_MIRRORLIST" "$BACKUP_MIRRORLIST"
+        reflector --latest 20 --protocol https --sort rate --save "$PACMAN_MIRRORLIST"
+        echo "Mirrors ranked successfully!"
+    else
+        echo "reflector not found. Install reflector package."
+    fi
+}
+
+case "${1:-menu}" in
+    menu)
+        select_mirror
+        ;;
+    rank)
+        rank_mirrors
+        ;;
+    *)
+        echo "Usage: choose-mirror [menu|rank]"
+        ;;
+esac
