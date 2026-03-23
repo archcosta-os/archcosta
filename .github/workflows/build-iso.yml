@@ -91,14 +91,14 @@ jobs:
 
       - name: Install Kernel
         run: |
-          pacman -S --noconfirm --skippgpcheck $(
-            case "${{ github.event.inputs.kernel }}" in
-              linux-cachyos) echo "linux-cachyos linux-cachyos-headers" ;;
-              linux-zen) echo "linux-zen linux-zen-headers" ;;
-              linux-lts) echo "linux-lts linux-lts-headers" ;;
-              *) echo "linux linux-headers" ;;
-            esac
-          )
+          KERNEL_PKGS=""
+          case "${{ github.event.inputs.kernel }}" in
+            linux-cachyos) KERNEL_PKGS="linux-cachyos linux-cachyos-headers" ;;
+            linux-zen) KERNEL_PKGS="linux-zen linux-zen-headers" ;;
+            linux-lts) KERNEL_PKGS="linux-lts linux-lts-headers" ;;
+            *) KERNEL_PKGS="linux linux-headers" ;;
+          esac
+          pacman -S --noconfirm --skippgpcheck $KERNEL_PKGS
 
       - name: Configure Kernel-Specific Settings
         run: |
