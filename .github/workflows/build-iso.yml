@@ -85,21 +85,10 @@ jobs:
           
           # CachyOS Repository
           [cachyos]
-          Server = https://mirror.cachyos.org/repo/x86_64/cachyos
-          SigLevel = Never
+          SigLevel = Optional TrustAll
+          Server = https://mirror.cachyos.org/repo/$arch/cachyos
           EOF
-          pacman -Sy --noconfirm cachyos
-
-      - name: Install Kernel
-        run: |
-          KERNEL_PKGS=""
-          case "${{ github.event.inputs.kernel }}" in
-            linux-cachyos) KERNEL_PKGS="linux-cachyos linux-cachyos-headers" ;;
-            linux-zen) KERNEL_PKGS="linux-zen linux-zen-headers" ;;
-            linux-lts) KERNEL_PKGS="linux-lts linux-lts-headers" ;;
-            *) KERNEL_PKGS="linux linux-headers" ;;
-          esac
-          pacman -S --noconfirm $KERNEL_PKGS
+          pacman -Sy --noconfirm
 
       - name: Configure Kernel-Specific Settings
         run: |
@@ -107,7 +96,7 @@ jobs:
           
           echo "==> Kernel: $KERNEL"
           
-          # Update packages.x86_64
+          # Update packages.x86_64 FIRST (before installing kernel)
           sed -i 's/^linux$/'"$KERNEL"'/' packages.x86_64
           sed -i 's/^linux-headers$/'"$KERNEL"'-headers/' packages.x86_64
           
@@ -122,6 +111,17 @@ jobs:
           
           echo "==> Updated packages.x86_64:"
           grep -E "^linux" packages.x86_64 || echo "No kernel found"
+
+      - name: Install Kernel
+        run: |
+          KERNEL_PKGS=""
+          case "${{ github.event.inputs.kernel }}" in
+            linux-cachyos) KERNEL_PKGS="linux-cachyos linux-cachyos-headers" ;;
+            linux-zen) KERNEL_PKGS="linux-zen linux-zen-headers" ;;
+            linux-lts) KERNEL_PKGS="linux-lts linux-lts-headers" ;;
+            *) KERNEL_PKGS="linux linux-headers" ;;
+          esac
+          pacman -S --noconfirm $KERNEL_PKGS
 
       - name: Build ISO
         run: |
