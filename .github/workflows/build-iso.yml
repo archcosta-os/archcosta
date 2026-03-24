@@ -59,11 +59,11 @@ jobs:
       options: --privileged
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js for actions
+      - name: Set up environment for actions
         run: |
           echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
 
       - name: Clear Pacman Cache
         run: |
@@ -161,16 +161,18 @@ jobs:
           cat "${ISO_FILE}.sha256"
 
       - name: Setup SSH for SourceForge
-        if: env.SOURCEFORGE_SSH_KEY != ''
+        if: secrets.SOURCEFORGE_SSH_KEY != ''
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_key
           chmod 600 ~/.ssh/sourceforge_key
           ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
+        env:
+          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
 
       - name: Upload to SourceForge
-        if: env.SOURCEFORGE_SSH_KEY != '' && success()
+        if: secrets.SOURCEFORGE_SSH_KEY != '' && success()
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
           SOURCEFORGE_USER: ${{ secrets.SOURCEFORGE_USERNAME }}
