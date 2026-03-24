@@ -12,13 +12,13 @@ sof-firmware
 intel-ucode
 amd-ucode
 licenses
-grub
+dracut
+systemd
 syslinux
 memtest86+
 memtest86+-efi
 edk2-shell
 efibootmgr
-mkinitcpio
 iptables
 mtools
 dosfstools
