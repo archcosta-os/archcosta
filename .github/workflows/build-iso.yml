@@ -24,9 +24,14 @@ on:
           - linux-zen
           - linux-lts
           - linux-cachyos
+      upload_release:
+        description: 'Upload to GitHub Release'
+        required: false
+        default: 'false'
+        type: boolean
 
 env:
-  SOURCEFORGE_PROJECT: archcosta  # CHANGE THIS to your SourceForge project name
+  SOURCEFORGE_PROJECT: archcosta
 
 jobs:
   prepare:
@@ -139,48 +144,72 @@ jobs:
           mkdir -p /tmp/out
           mkarchiso -v -w /tmp/work -o /tmp/out .
 
-      - name: Generate SHA256 Hash
+      - name: Generate Hashes
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
+          echo "==> Generating hash files for $(basename "$ISO_FILE")"
           sha256sum "$ISO_FILE" > "${ISO_FILE}.sha256"
+          sha512sum "$ISO_FILE" > "${ISO_FILE}.sha512"
           cat "${ISO_FILE}.sha256"
 
-      - name: Upload to SourceForge
-        if: success()
+      - name: Setup SSH for SourceForge
+        if: env.SOURCEFORGE_SSH_KEY != ''
         run: |
-          ISO_FILE=$(ls /tmp/out/*.iso)
-          SHA256_FILE="${ISO_FILE}.sha256"
-
-          echo "==> ISO File: $(basename "$ISO_FILE")"
-
           mkdir -p ~/.ssh
-
-          # Add host
+          chmod 700 ~/.ssh
+          echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_key
+          chmod 600 ~/.ssh/sourceforge_key
           ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
 
-          # Write key (IMPORTANT - decode base64)
-          echo "$SOURCEFORGE_SSH_KEY" | base64 -d > ~/.ssh/sourceforge_rsync
-          chmod 600 ~/.ssh/sourceforge_rsync
-
-          # Test connection (optional debug)
-          ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
-            $SOURCEFORGE_USERNAME@frs.sourceforge.net "echo Connected"
-
-          # Create directory
-          ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
-            $SOURCEFORGE_USERNAME@frs.sourceforge.net \
-            "mkdir -p /home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}" || true
-
-          # Upload
-          rsync -avz --progress \
-            -e "ssh -i ~/.ssh/sourceforge_rsync -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
-            "$ISO_FILE" \
-            "$SHA256_FILE" \
-            "$SOURCEFORGE_USERNAME@frs.sourceforge.net:/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}/"
+      - name: Upload to SourceForge
+        if: env.SOURCEFORGE_SSH_KEY != '' && success()
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
-          SOURCEFORGE_USERNAME: costaoss
-          SOURCEFORGE_PROJECT: archcosta
+          SOURCEFORGE_USER: ${{ secrets.SOURCEFORGE_USERNAME }}
+        run: |
+          ISO_FILE=$(ls /tmp/out/*.iso)
+          ISO_NAME=$(basename "$ISO_FILE")
+          DEST_DIR="/home/frs/project/$SOURCEFORGE_PROJECT/${{ matrix.desktop }}-${{ github.event.inputs.kernel }}"
+          
+          echo "==> Uploading $ISO_NAME to SourceForge..."
+          
+          # Create remote directory
+          ssh -i ~/.ssh/sourceforge_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            "$SOURCEFORGE_USER@frs.sourceforge.net" \
+            "mkdir -p $DEST_DIR" || true
+          
+          # Upload ISO and hash files
+          rsync -avz --progress --partial \
+            -e "ssh -i ~/.ssh/sourceforge_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+            "$ISO_FILE" \
+            "${ISO_FILE}.sha256" \
+            "${ISO_FILE}.sha512" \
+            "$SOURCEFORGE_USER@frs.sourceforge.net:$DEST_DIR/"
+          
+          echo "==> Upload complete!"
+
+      - name: Upload to GitHub Release
+        if: github.event.inputs.upload_release == 'true' && success()
+        run: |
+          ISO_FILE=$(ls /tmp/out/*.iso)
+          ISO_NAME=$(basename "$ISO_FILE")
+          TAG_NAME="${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-latest"
+          
+          echo "==> Creating GitHub release $TAG_NAME..."
+          
+          # Create release if not exists
+          gh release create "$TAG_NAME" \
+            --title "ArchCosta ${{ matrix.desktop }} (${{ github.event.inputs.kernel }})" \
+            --notes "Automated build - $(date)" \
+            --generate-notes || true
+          
+          # Upload ISO and hash files
+          gh release upload "$TAG_NAME" "$ISO_FILE" \
+            "${ISO_FILE}.sha256" \
+            "${ISO_FILE}.sha512" \
+            --clobber
+          
+          echo "==> GitHub release upload complete!"
 
       - name: Display Build Results
         if: failure()
@@ -192,7 +221,7 @@ jobs:
           echo "💡 Make sure to set SOURCEFORGE_SSH_KEY secret in repository settings"
           echo "   Repository Settings → Secrets and variables → Actions → New repository secret"
           echo "   Name: SOURCEFORGE_SSH_KEY"
-          echo "   Value: Your SourceForge SSH private key"
+          echo "   Value: Your SourceForge SSH private key (base64 encoded)"
           echo "================================================================================"
 
       - name: Upload ISO artifact (GitHub)
@@ -201,3 +230,4 @@ jobs:
         with:
           name: archcosta-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-iso
           path: /tmp/out/*.iso
+          retention-days: 30
