@@ -161,7 +161,7 @@ jobs:
           cat "${ISO_FILE}.sha256"
 
       - name: Setup SSH for SourceForge
-        if: secrets.SOURCEFORGE_SSH_KEY != ''
+        if: ${{ secrets.SOURCEFORGE_SSH_KEY != '' }}
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
@@ -172,7 +172,7 @@ jobs:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
 
       - name: Upload to SourceForge
-        if: secrets.SOURCEFORGE_SSH_KEY != '' && success()
+        if: ${{ secrets.SOURCEFORGE_SSH_KEY != '' && success() }}
         env:
           SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
           SOURCEFORGE_USER: ${{ secrets.SOURCEFORGE_USERNAME }}
