@@ -1,14 +1,20 @@
 name: Create Pre-Release
 
 on:
-  workflow_run:
-    workflows: [Build ISO]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version/tag'
+        required: false
+        default: 'latest'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        default: 'true'
+        type: boolean
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,24 +38,22 @@ jobs:
             fi
           done
 
-      - name: Create Pre-Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: ArchCosta Linux Latest Build
+          tag_name: ${{ github.event.inputs.version || 'latest' }}
+          name: ArchCosta Linux ${{ github.event.inputs.version || 'Latest' }} Build
           body: |
             ## ArchCosta Linux Live ISO
 
             ### Build Info
-            - Build Date: ${{ github.event.workflow_run.created_at }}
+            - Build Date: ${{ github.event.inputs.version || 'latest' }}
             - Commit: ${{ github.sha }}
 
             ### Downloads
             Download the ISO and checksum files below.
-
-            > ⚠️ **This is a pre-release for testing purposes**
           draft: false
-          prerelease: true
+          prerelease: ${{ github.event.inputs.prerelease != 'false' }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,7 +63,7 @@ jobs:
           for iso in *.iso; do
             if [ -f "$iso" ]; then
               echo "Uploading $iso..."
-              gh release upload latest "$iso" "${iso}.sha256" "${iso}.sha512" --clobber
+              gh release upload ${{ github.event.inputs.version || 'latest' }} "$iso" "${iso}.sha256" "${iso}.sha512" --clobber
             fi
           done
         env:
@@ -67,5 +71,5 @@ jobs:
 
       - name: Display Release URL
         run: |
-          echo "✅ Pre-release created successfully!"
-          echo "📦 Download: https://github.com/${{ github.repository }}/releases/tag/latest"
+          echo "✅ Release created successfully!"
+          echo "📦 Download: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version || 'latest' }}"
