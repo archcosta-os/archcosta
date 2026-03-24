@@ -13,26 +13,6 @@ log() {
 
 log "==> ArchCosta Live ISO customization starting..."
 
-# Copy CPU microcode images to boot (needed for bootloader)
-copy_ucode_images() {
-    local ucode_dest="/boot"
-    
-    mkdir -p "${ucode_dest}"
-    
-    if [ -f "/usr/lib/firmware/intel-ucode.img" ]; then
-        log "Copying Intel microcode to ${ucode_dest}..."
-        cp -f "/usr/lib/firmware/intel-ucode.img" "${ucode_dest}/intel-ucode.img"
-    fi
-    
-    if [ -f "/usr/lib/firmware/amd-ucode.img" ]; then
-        log "Copying AMD microcode to ${ucode_dest}..."
-        cp -f "/usr/lib/firmware/amd-ucode.img" "${ucode_dest}/amd-ucode.img"
-    fi
-    
-    # Verify files exist
-    ls -la "${ucode_dest}/"*ucode*.img 2>/dev/null || log "No microcode files found in ${ucode_dest}/"
-}
-
 # Enable system services
 enable_services() {
     log "Enabling system services..."
@@ -68,7 +48,6 @@ set_hostname() {
 
 # Main execution
 main() {
-    copy_ucode_images
     enable_services
     configure_live_user
     set_hostname
