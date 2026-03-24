@@ -1,0 +1,71 @@
+name: Create Pre-Release
+
+on:
+  workflow_run:
+    workflows: [Build ISO]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download ISO artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+
+      - name: List downloaded files
+        run: ls -la
+
+      - name: Generate checksums
+        run: |
+          for iso in *.iso; do
+            if [ -f "$iso" ]; then
+              echo "Generating checksums for $iso"
+              sha256sum "$iso" > "${iso}.sha256"
+              sha512sum "$iso" > "${iso}.sha512"
+            fi
+          done
+
+      - name: Create Pre-Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: ArchCosta Linux Latest Build
+          body: |
+            ## ArchCosta Linux Live ISO
+
+            ### Build Info
+            - Build Date: ${{ github.event.workflow_run.created_at }}
+            - Commit: ${{ github.sha }}
+
+            ### Downloads
+            Download the ISO and checksum files below.
+
+            > ⚠️ **This is a pre-release for testing purposes**
+          draft: false
+          prerelease: true
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload ISO to Release
+        run: |
+          for iso in *.iso; do
+            if [ -f "$iso" ]; then
+              echo "Uploading $iso..."
+              gh release upload latest "$iso" "${iso}.sha256" "${iso}.sha512" --clobber
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display Release URL
+        run: |
+          echo "✅ Pre-release created successfully!"
+          echo "📦 Download: https://github.com/${{ github.repository }}/releases/tag/latest"
