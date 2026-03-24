@@ -61,6 +61,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Node.js for actions
+        run: |
+          echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
+
       - name: Clear Pacman Cache
         run: |
           rm -f /var/lib/pacman/db.lck
@@ -80,7 +84,7 @@ jobs:
 
       - name: Setup Build Environment
         run: |
-          pacman -S --noconfirm archiso mkinitcpio-archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq openssh rsync
+          pacman -S --noconfirm archiso mkinitcpio-archiso grub mtools dosfstools libisoburn squashfs-tools git curl pv nbd mkinitcpio-nfs-utils zip jq openssh rsync syslinux
 
       - name: Add CachyOS Repository (for linux-cachyos)
         if: "${{ github.event.inputs.kernel == 'linux-cachyos' }}"
@@ -127,6 +131,10 @@ jobs:
             *) KERNEL_PKGS="linux linux-headers" ;;
           esac
           pacman -S --noconfirm $KERNEL_PKGS
+          
+          # Copy vconsole.conf before rebuilding initramfs (needed for sd-vconsole hook)
+          echo "==> Setting up vconsole.conf..."
+          cp airootfs/etc/vconsole.conf /etc/vconsole.conf
           
           # Rebuild initramfs with archiso hook for live boot
           echo "==> Rebuilding initramfs with archiso hook..."
