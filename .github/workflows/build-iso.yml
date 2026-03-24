@@ -82,12 +82,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Clear Pacman Cache
+      - name: Clear All Caches
         run: |
           rm -f /var/lib/pacman/db.lck
           rm -rf /var/lib/pacman/sync/*
           rm -rf /var/cache/pacman/pkg/*
+          rm -rf /tmp/work /tmp/out
+          rm -rf /root/.ccache
+          rm -rf /root/.cache
+          rm -rf build-cache
+          find /root -name "*.pyc" -delete 2>/dev/null || true
           sed -i 's/SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 
       - name: Setup Mirrorlist
@@ -248,12 +255,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Clear Pacman Cache
+      - name: Clear All Caches
         run: |
           rm -f /var/lib/pacman/db.lck
           rm -rf /var/lib/pacman/sync/*
           rm -rf /var/cache/pacman/pkg/*
+          rm -rf /tmp/work /tmp/out
+          rm -rf /root/.ccache
+          rm -rf /root/.cache
+          rm -rf build-cache
+          find /root -name "*.pyc" -delete 2>/dev/null || true
           sed -i 's/SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 
       - name: Setup Mirrorlist
