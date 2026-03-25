@@ -46,11 +46,34 @@ set_hostname() {
     echo "archcosta" > /etc/hostname
 }
 
+# Configure calamares
+configure_calamares() {
+    log "Configuring custom Calamares modules..."
+    
+    local custom_dir="/etc/calamares/custom"
+    
+    if [ -d "$custom_dir" ]; then
+        # Move modules
+        cp -f "$custom_dir/bootloader.conf" /etc/calamares/modules/ 2>/dev/null || true
+        cp -f "$custom_dir/fstab.conf" /etc/calamares/modules/ 2>/dev/null || true
+        cp -f "$custom_dir/partition.conf" /etc/calamares/modules/ 2>/dev/null || true
+        cp -f "$custom_dir/shellprocess.conf" /etc/calamares/modules/ 2>/dev/null || true
+        
+        # Move scripts
+        cp -f "$custom_dir/pacstrap_calamares" /etc/calamares/scripts/ 2>/dev/null || true
+        chmod +x /etc/calamares/scripts/pacstrap_calamares 2>/dev/null || true
+        
+        # Cleanup custom dir
+        rm -rf "$custom_dir"
+    fi
+}
+
 # Main execution
 main() {
     enable_services
     configure_live_user
     set_hostname
+    configure_calamares
     
     log "==> ArchCosta Live ISO customization complete!"
 }
