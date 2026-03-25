@@ -47,7 +47,6 @@ python-setuptools
 
 # Fonts
 noto-fonts
-noto-fonts-cjk
 noto-fonts-emoji
 ttf-jetbrains-mono
 ttf-fira-code
