@@ -101,6 +101,6 @@ hplip
 lsb-release
 
 # Installer
-calamares
+cachyos-calamares-qt6-grub
 os-prober
 python-jsonschema
