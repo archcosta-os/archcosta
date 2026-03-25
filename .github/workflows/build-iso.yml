@@ -86,7 +86,7 @@ jobs:
 
       - name: Setup Build Environment
         run: |
-          pacman -S --noconfirm archiso dracut mtools dosfstools libisoburn squashfs-tools git curl pv nbd zip jq openssh rsync
+          pacman -S --noconfirm archiso dracut mtools dosfstools libisoburn squashfs-tools git curl pv nbd zip jq openssh rsync p7zip
 
       - name: Add CachyOS Repository (for linux-cachyos)
         if: "${{ github.event.inputs.kernel == 'linux-cachyos' }}"
@@ -142,12 +142,19 @@ jobs:
           sha256sum "$ISO_FILE" > "${ISO_FILE}.sha256"
           cat "${ISO_FILE}.sha256"
 
+      - name: Compress ISO (for GitHub Release limit)
+        run: |
+          ISO_FILE=$(ls /tmp/out/*.iso)
+          7z a -mx=1 "${ISO_FILE}.7z" "$ISO_FILE"
+
       - name: Upload ISO artifact (GitHub)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: archcosta-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-iso
-          path: /tmp/out/*.iso
+          path: |
+            /tmp/out/*.iso
+            /tmp/out/*.7z
 
       - name: Create Release
         if: success()
@@ -160,9 +167,11 @@ jobs:
             
             Kernel: ${{ github.event.inputs.kernel }}
             Build Date: ${{ github.event.repository.updated_at }}
+            
+            **Note:** The ISO is compressed in .7z format to stay within GitHub's file size limits.
           prerelease: true
           files: |
-            /tmp/out/*.iso
+            /tmp/out/*.7z
             /tmp/out/*.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
