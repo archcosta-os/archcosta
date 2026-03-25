@@ -28,6 +28,9 @@ on:
 env:
   SOURCEFORGE_PROJECT: archcosta
 
+permissions:
+  contents: write
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -145,3 +148,21 @@ jobs:
         with:
           name: archcosta-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-iso
           path: /tmp/out/*.iso
+
+      - name: Create Release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: rolling
+          name: "ArchCosta Rolling Release"
+          body: |
+            ArchCosta Automated ISO Builds
+            
+            Kernel: ${{ github.event.inputs.kernel }}
+            Build Date: ${{ github.event.repository.updated_at }}
+          prerelease: true
+          files: |
+            /tmp/out/*.iso
+            /tmp/out/*.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
