@@ -97,7 +97,6 @@ _clean_offline_packages(){
         memtest86+-efi
         mkinitcpio
         mkinitcpio-archiso
-        mkinitcpio-busybox
         mkinitcpio-nfs-utils
         pv
         syslinux

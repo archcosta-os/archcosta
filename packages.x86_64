@@ -1,6 +1,7 @@
 # Base system
 base
 archiso
+mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
 nbd
