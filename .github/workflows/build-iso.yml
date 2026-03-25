@@ -13,6 +13,9 @@ on:
           - plasma
           - cinnamon
           - mate
+          - gnome
+          - hyprland
+          - i3wm
           - all
       kernel:
         description: 'Kernel to use'
@@ -40,7 +43,7 @@ jobs:
       - id: set-matrix
         run: |
           if [ "${{ github.event.inputs.desktop }}" == "all" ]; then
-            echo 'matrix=["xfce", "plasma", "cinnamon", "mate"]' >> $GITHUB_OUTPUT
+            echo 'matrix=["xfce", "plasma", "cinnamon", "mate", "gnome", "hyprland", "i3wm"]' >> $GITHUB_OUTPUT
           else
             echo 'matrix=["${{ github.event.inputs.desktop }}"]' >> $GITHUB_OUTPUT
           fi
