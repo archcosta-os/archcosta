@@ -14,6 +14,10 @@ amd-ucode
 licenses
 dracut
 systemd
+grub
+grub-btrfs
+btrfs-progs
+inotify-tools
 syslinux
 memtest86+
 memtest86+-efi
