@@ -99,3 +99,8 @@ cups-pdf
 system-config-printer
 hplip
 lsb-release
+
+# Installer
+calamares
+os-prober
+python-jsonschema
