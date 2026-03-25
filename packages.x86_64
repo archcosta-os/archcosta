@@ -99,6 +99,8 @@ cups-pdf
 system-config-printer
 hplip
 lsb-release
+lightdm
+lightdm-slick-greeter
 
 # Installer
 cachyos-calamares-qt6-grub

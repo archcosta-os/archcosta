@@ -104,21 +104,27 @@ jobs:
       - name: Configure Kernel-Specific Settings
         run: |
           KERNEL="${{ github.event.inputs.kernel }}"
+          DESKTOP="${{ matrix.desktop }}"
           
           echo "==> Kernel: $KERNEL"
+          echo "==> Desktop: $DESKTOP"
           
           sed -i 's/^linux$/'"$KERNEL"'/' packages.x86_64
           sed -i 's/^linux-headers$/'"$KERNEL"'-headers/' packages.x86_64
           
-          sed -i "s/iso_name=\"archcosta\"/iso_name=\"archcosta-${{ matrix.desktop }}\"/" profiledef.sh
-          UPPER_DE=$(echo "${{ matrix.desktop }}" | tr '[:lower:]' '[:upper:]')
+          sed -i "s/iso_name=\"archcosta\"/iso_name=\"archcosta-${DESKTOP}\"/" profiledef.sh
+          UPPER_DE=$(echo "${DESKTOP}" | tr '[:lower:]' '[:upper:]')
           sed -i "s/ARCHCOSTA_/ARCHCOSTA_${UPPER_DE}_/" profiledef.sh
           
           cp syslinux/syslinux-${KERNEL}.cfg syslinux/syslinux.cfg
           cp efiboot/loader/entries/archcosta-${KERNEL}.conf efiboot/loader/entries/archcosta.conf
           
+          # Add the selected desktop environment package
+          echo "archcosta-${DESKTOP}" >> packages.x86_64
+          
           echo "==> Updated packages.x86_64:"
           grep -E "^linux" packages.x86_64 || echo "No kernel found"
+          tail -n 5 packages.x86_64
 
       - name: Install Kernel
         run: |
