@@ -162,8 +162,8 @@ jobs:
         with:
           name: archcosta-${{ matrix.desktop }}-${{ github.event.inputs.kernel }}-iso
           path: |
-            /tmp/out/*.iso
             /tmp/out/*.7z
+            /tmp/out/*.sha256
 
       - name: Create Release
         if: success()

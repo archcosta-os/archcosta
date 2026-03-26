@@ -15,18 +15,18 @@ detect_session() {
     
     # Priority order for desktop environments
     local sessions=(
+        "hyprland"        # Hyprland (Wayland)
         "plasma"          # KDE Plasma (X11)
         "plasmawayland"   # KDE Plasma (Wayland)
+        "gnome"           # GNOME (Wayland/X11)
         "cinnamon"        # Cinnamon
         "mate"            # MATE
         "xfce"            # XFCE
-        "gnome"            # GNOME
-        "gnome-xorg"       # GNOME on X11
+        "i3"               # i3
+        "i3-with-shmlog"  # i3 with shmlog
         "budgie"           # Budgie
         "lxde"             # LXDE
         "lxqt"             # LXQt
-        "i3"               # i3
-        "i3-with-shmlog"  # i3 with shmlog
     )
     
     # Check X11 sessions first
@@ -74,14 +74,8 @@ configure_lightdm() {
         gnome|gnome-xorg)
             SESSION_ID="gnome"
             ;;
-        budgie)
-            SESSION_ID="budgie-desktop"
-            ;;
-        lxde)
-            SESSION_ID="LXDE"
-            ;;
-        lxqt)
-            SESSION_ID="lxqt"
+        hyprland)
+            SESSION_ID="hyprland"
             ;;
         i3|i3-with-shmlog)
             SESSION_ID="i3"

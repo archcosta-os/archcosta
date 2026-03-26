@@ -60,6 +60,16 @@ set_wallpaper() {
                 gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER" 2>/dev/null || true
             fi
             ;;
+        hyprland)
+            if command -v swww &>/dev/null; then
+                swww img "$WALLPAPER" 2>/dev/null || true
+            fi
+            ;;
+        i3|i3-with-shmlog)
+            if command -v feh &>/dev/null; then
+                feh --bg-fill "$WALLPAPER" 2>/dev/null || true
+            fi
+            ;;
         budgie)
             if command -v gsettings &>/dev/null; then
                 gsettings set com.solus-project.budgie.background picture "$WALLPAPER" 2>/dev/null || true

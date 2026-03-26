@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ArchCosta Live Setup
+Comment=Post-boot configuration for live environment
+Exec=/usr/local/bin/archcosta-live-setup
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-Autostart-enabled=true
+X-MATE-Autostart-enabled=true
+X-Cinnamon-Autostart-enabled=true
+OnlyShowIn=XFCE;GNOME;KDE;MATE;Cinnamon;Budgie;LXDE;LXQt;i3;Hyprland;
