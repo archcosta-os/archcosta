@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Plasma
+Comment=KDE Plasma Desktop
+Exec=startplasma-x11
+Type=Application
+Keywords=desktop;kde;plasma;kde5;

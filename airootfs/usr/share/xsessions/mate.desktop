@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=MATE
+Comment=MATE Desktop Environment
+Exec=mate-session
+Type=Application
+Keywords=desktop;mate;gnome2;

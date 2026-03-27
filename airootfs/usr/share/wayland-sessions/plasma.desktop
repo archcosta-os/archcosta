@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Plasma (Wayland)
+Comment=KDE Plasma Desktop (Wayland)
+Exec=startplasma-wayland
+Type=Application
+Keywords=desktop;kde;plasma;wayland;
+Wayland=true

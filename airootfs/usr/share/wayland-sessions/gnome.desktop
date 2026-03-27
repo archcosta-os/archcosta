@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=GNOME (Wayland)
+Comment=GNOME Desktop Environment (Wayland)
+Exec=gnome-wayland-session
+Type=Application
+Keywords=desktop;gnome;gnome3;wayland;
+Wayland=true
