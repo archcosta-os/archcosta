@@ -75,7 +75,7 @@ swww
 rofi
 picom
 
-# i3wm (meta package only, no i3-wm to avoid conflict)
+# i3wm
 i3status
 
 # Xorg
@@ -113,6 +113,3 @@ lightdm-slick-greeter
 cachyos-calamares-qt6-grub
 os-prober
 python-jsonschema
-
-# ArchCosta meta
-archcosta-i3wm
