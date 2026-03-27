@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Wayfire
+Comment=Wayland compositor with 3D effects
+Exec=wayfire
+Type=Application
+Keywords=wayland;compositor;3d;
