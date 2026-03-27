@@ -75,6 +75,12 @@ main() {
     set_hostname
     configure_calamares
     
+    # Compile dconf defaults if provided
+    if command -v dconf >/dev/null 2>&1 && [ -d /etc/dconf/db/local.d ]; then
+        log "Updating dconf databases..."
+        dconf update || true
+    fi
+    
     log "==> ArchCosta Live ISO customization complete!"
 }
 

@@ -1,0 +1,19 @@
+[org/gnome/desktop/interface]
+gtk-theme='Arc-Dark'
+icon-theme='Papirus-Dark'
+cursor-theme='Breeze'
+font-name='Noto Sans 11'
+color-scheme='prefer-dark'
+
+[org/gnome/shell]
+enabled-extensions=['apps-menu@gnome-shell-extensions.gcampax.github.com','user-theme@gnome-shell-extensions.gcampax.github.com']
+
+[org/cinnamon/desktop/interface]
+gtk-theme='Arc-Dark'
+icon-theme='Papirus-Dark'
+cursor-theme='Breeze'
+font-name='Noto Sans 11'
+
+[org/cinnamon]
+enabled-applets=['panel1:left:0:menu@cinnamon.org:0','panel1:left:1:window-list@cinnamon.org:1','panel1:right:0:systray@cinnamon.org:2','panel1:right:1:sound@cinnamon.org:3','panel1:right:2:calendar@cinnamon.org:4']
+enabled-desklets=['calendar@cinnamon.org:0']

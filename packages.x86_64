@@ -66,6 +66,39 @@ gparted
 baobab
 feh
 swww
+rofi
+picom
+
+# Themes & icon sets
+arc-gtk-theme
+papirus-icon-theme
+kvantum-qt5
+kvantum-qt6
+
+# Desktop Environments / WMs
+xfce4
+xfce4-goodies
+xfce4-whiskermenu-plugin
+cinnamon
+gnome-shell
+gnome-shell-extensions
+gnome-control-center
+gnome-terminal
+gnome-tweaks
+plasma-desktop
+konsole
+dolphin
+kcalc
+hyprland
+xdg-desktop-portal-hyprland
+waybar
+hyprpaper
+wlogout
+swaybg
+sddm-kcm
+i3-wm
+i3status
+dmenu
 
 # Xorg
 xorg-server
