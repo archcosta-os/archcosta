@@ -1,0 +1,6 @@
+# ArchCosta Openbox Theme
+# Place in ~/.config/openbox/rc.xml or use obconf
+
+# Window decorations
+theme.name=ArchCosta
+theme.desktop.background=/usr/share/backgrounds/archcosta/default.jpg

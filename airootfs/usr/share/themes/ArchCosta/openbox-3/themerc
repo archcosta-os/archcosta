@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme name="ArchCosta" xmlns:o="http://openbox.org/3.4/theme">
+  <o:font place="ActiveWindow">
+    <font name="Noto Sans" size="11"/>
+  </o:font>
+  <o:font place="InactiveWindow">
+    <font name="Noto Sans" size="10"/>
+  </o:font>
+  <o:font place="MenuHeader">
+    <font name="Noto Sans" size="12"/>
+  </o:font>
+  <o:font place="MenuItem">
+    <font name="Noto Sans" size="11"/>
+  </o:font>
+  <o:font place="ActiveOnScreenDisplay">
+    <font name="Noto Sans" size="12"/>
+  </o:font>
+  <o:font place="InActiveOnScreenDisplay">
+    <font name="Noto Sans" size="11"/>
+  </o:font>
+  <o:font place="Tooltip">
+    <font name="Noto Sans" size="10"/>
+  </o:font>
+  
+  <o:window>
+    <o:drawBackground value="Yes"/>
+    <o:background color="#1e1e1e"/>
+    <o:text color="#eeeeee"/>
+    <o:indicator color="#7fdbca"/>
+    
+    <o:title>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d"/>
+      <o:overlay type="ground" focus="Yes">
+        <image path="/usr/share/themes/ArchCosta/wm-icon-focused.png"/>
+      </o:overlay>
+      <o:overlay type="ground" focus="No">
+        <image path="/usr/share/themes/ArchCosta/wm-icon-unfocused.png"/>
+      </o:overlay>
+      <o:text color="#eeeeee"/>
+      <o:font name="ActiveWindow"/>
+      <o:textjustify value="Left"/>
+      <o:height>28</o:height>
+      <o:padding>4</o:padding>
+    </o:title>
+    
+    <o:titlebar>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d"/>
+      <o:height>28</o:height>
+    </o:titlebar>
+    
+    <o:border>
+      <o:width>2</o:width>
+      <o:color>#444444</o:color>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#1e1e1e"/>
+    </o:border>
+    
+    <o:button>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d" focus="No"/>
+      <o:background color="#eb5251" pressed="Yes"/>
+      <o:background color="#3d3d3d" hover="Yes"/>
+      <o:width>20</o:width>
+      <o:height>20</o:height>
+      <o:border>
+        <o:width>0</o:width>
+      </o:border>
+    </o:button>
+    
+    <o:button>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d" focus="No"/>
+      <o:background color="#7fdbca" pressed="Yes"/>
+      <o:background color="#3d3d3d" hover="Yes"/>
+      <o:width>20</o:width>
+      <o:height>20</o:height>
+      <o:border>
+        <o:width>0</o:width>
+      </o:border>
+    </o:button>
+    
+    <o:button>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d" focus="No"/>
+      <o:background color="#ff9f43" pressed="Yes"/>
+      <o:background color="#3d3d3d" hover="Yes"/>
+      <o:width>20</o:width>
+      <o:height>20</o:height>
+      <o:border>
+        <o:width>0</o:width>
+      </o:border>
+    </o:button>
+    
+    <o:button>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d" focus="No"/>
+      <o:background color="#5ad1c4" pressed="Yes"/>
+      <o:background color="#3d3d3d" hover="Yes"/>
+      <o:width>20</o:width>
+      <o:height>20</o:height>
+      <o:border>
+        <o:width>0</o:width>
+      </o:border>
+    </o:button>
+  </o:window>
+  
+  <o:menu>
+    <o:drawBackground value="Yes"/>
+    <o:background color="#1e1e1e"/>
+    <o:foreground color="#eeeeee"/>
+    <o:border>
+      <o:width>1</o:width>
+      <o:color>#444444</o:color>
+    </o:border>
+    <o:title>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#2d2d2d"/>
+      <o:text color="#eeeeee"/>
+      <o:font name="MenuHeader"/>
+      <o:height>32</o:height>
+      <o:padding>8</o:padding>
+    </o:title>
+    <o:item>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#1e1e1e" active="No"/>
+      <o:background color="#eb5251" active="Yes"/>
+      <o:text color="#eeeeee"/>
+      <o:font name="MenuItem"/>
+      <o:height>32</o:height>
+      <o:padding>8</o:padding>
+    </o:item>
+    <o:separator>
+      <o:drawBackground value="Yes"/>
+      <o:background color="#444444"/>
+      <o:height>2</o:height>
+    </o:separator>
+  </o:menu>
+  
+  <o:osd>
+    <o:drawBackground value="Yes"/>
+    <o:background color="#1e1e1e" onscreen="Yes"/>
+    <o:border>
+      <o:width>2</o:width>
+      <o:color>#7fdbca</o:color>
+    </o:border>
+    <o:text color="#eeeeee"/>
+    <o:font name="OnScreenDisplay"/>
+  </o:osd>
+</theme>
