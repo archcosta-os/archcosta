@@ -134,9 +134,19 @@ jobs:
             sed -i '/^i3status$/d' packages.x86_64
           fi
           
+          # Skip archcosta-hyprland (has wofi-emoji dependency issue in repo)
+          if [ "$DESKTOP" == "hyprland" ]; then
+            sed -i '/^archcosta-hyprland$/d' packages.x86_64
+          fi
+          
+          # Skip archcosta-gnome (not available in repo)
+          if [ "$DESKTOP" == "gnome" ]; then
+            sed -i '/^archcosta-gnome$/d' packages.x86_64
+          fi
+          
           # Add the selected desktop environment/wm package (skip for WMs that use base configs)
           case "$DESKTOP" in
-            xfce|plasma|cinnamon|mate|gnome|hyprland|i3wm)
+            xfce|plasma|cinnamon|mate|i3wm)
               echo "archcosta-${DESKTOP}" >> packages.x86_64
               ;;
             *)
