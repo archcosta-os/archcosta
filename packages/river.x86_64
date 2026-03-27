@@ -77,8 +77,6 @@ picom
 
 # River WM
 river
-rivercarro
-river-tags
 wofi
 
 # Xorg (needed for river)
