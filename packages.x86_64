@@ -70,10 +70,9 @@ rofi
 picom
 
 # Themes & icon sets
-arc-gtk-theme
+adw-gtk-theme
 papirus-icon-theme
 kvantum-qt5
-kvantum-qt6
 
 # Desktop Environments / WMs
 xfce4
