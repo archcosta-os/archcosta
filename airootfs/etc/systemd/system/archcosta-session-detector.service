@@ -2,9 +2,7 @@
 Description=ArchCosta Session Detector
 Documentation=https://github.com/archcosta-os/archcosta
 After=systemd-user-sessions.service
-After=plymouth-quit.service
 Before=lightdm.service
-Conflicts=plymouth-quit-wait.service
 
 [Service]
 Type=oneshot

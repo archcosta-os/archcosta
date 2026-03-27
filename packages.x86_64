@@ -29,7 +29,6 @@ mtools
 dosfstools
 gptfdisk
 earlyoom
-plymouth
 accountsservice
 dbus
 networkmanager
