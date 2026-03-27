@@ -95,8 +95,15 @@ hyprpaper
 wlogout
 swaybg
 sddm-kcm
-i3-wm
-i3status
+sway
+swayidle
+swaylock
+wayfire
+river
+niri
+bspwm
+openbox
+openbox-themes
 dmenu
 
 # Xorg
