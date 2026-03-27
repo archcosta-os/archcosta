@@ -118,9 +118,19 @@ jobs:
           echo "==> Kernel: $KERNEL"
           echo "==> Desktop: $DESKTOP"
           
+          # Use desktop-specific package list
+          if [ -f "packages/${DESKTOP}.x86_64" ]; then
+            cp "packages/${DESKTOP}.x86_64" packages.x86_64
+            echo "==> Using packages/${DESKTOP}.x86_64"
+          else
+            echo "==> No specific package file, using default"
+          fi
+          
+          # Replace kernel
           sed -i 's/^linux$/'"$KERNEL"'/' packages.x86_64
           sed -i 's/^linux-headers$/'"$KERNEL"'-headers/' packages.x86_64
           
+          # Update ISO name/label
           sed -i "s/iso_name=\"archcosta\"/iso_name=\"archcosta-${DESKTOP}\"/" profiledef.sh
           UPPER_DE=$(echo "${DESKTOP}" | tr '[:lower:]' '[:upper:]')
           sed -i "s/ARCHCOSTA_/ARCHCOSTA_${UPPER_DE}_/" profiledef.sh
@@ -128,34 +138,7 @@ jobs:
           cp syslinux/syslinux-${KERNEL}.cfg syslinux/syslinux.cfg
           cp efiboot/loader/entries/archcosta-${KERNEL}.conf efiboot/loader/entries/archcosta.conf
           
-          # Remove i3-wm when using archcosta-i3wm (conflicting files)
-          if [ "$DESKTOP" == "i3wm" ]; then
-            sed -i '/^i3-wm$/d' packages.x86_64
-            sed -i '/^i3status$/d' packages.x86_64
-          fi
-          
-          # Skip archcosta-hyprland (has wofi-emoji dependency issue in repo)
-          if [ "$DESKTOP" == "hyprland" ]; then
-            sed -i '/^archcosta-hyprland$/d' packages.x86_64
-          fi
-          
-          # Skip archcosta-gnome (not available in repo)
-          if [ "$DESKTOP" == "gnome" ]; then
-            sed -i '/^archcosta-gnome$/d' packages.x86_64
-          fi
-          
-          # Add the selected desktop environment/wm package (skip for WMs that use base configs)
-          case "$DESKTOP" in
-            xfce|plasma|cinnamon|mate|i3wm)
-              echo "archcosta-${DESKTOP}" >> packages.x86_64
-              ;;
-            *)
-              echo "==> Using base configs for $DESKTOP"
-              ;;
-          esac
-          
-          echo "==> Updated packages.x86_64:"
-          grep -E "^linux" packages.x86_64 || echo "No kernel found"
+          echo "==> Final packages.x86_64:"
           tail -n 10 packages.x86_64
 
       - name: Install Kernel

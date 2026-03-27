@@ -1,0 +1,118 @@
+# Base system
+base
+archiso
+mkinitcpio
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+nbd
+pv
+linux
+linux-headers
+linux-firmware
+sof-firmware
+intel-ucode
+amd-ucode
+licenses
+dracut
+systemd
+grub
+grub-btrfs
+btrfs-progs
+inotify-tools
+syslinux
+memtest86+
+memtest86+-efi
+edk2-shell
+efibootmgr
+iptables
+mtools
+dosfstools
+gptfdisk
+earlyoom
+accountsservice
+dbus
+networkmanager
+network-manager-applet
+
+# Build tools
+git
+curl
+wget
+unzip
+zip
+python
+python-pip
+python-setuptools
+
+# Fonts
+noto-fonts
+noto-fonts-emoji
+ttf-jetbrains-mono
+ttf-fira-code
+woff2-font-awesome
+adobe-source-sans-pro-fonts
+adobe-source-code-pro-fonts
+ttf-dejavu
+ttf-liberation
+cantarell-fonts
+
+# Desktop utilities
+alacritty
+mousepad
+xdg-user-dirs
+xdg-utils
+viewnior
+gparted
+baobab
+
+# Theming
+adw-gtk-theme
+papirus-icon-theme
+
+# Wallpaper & compositor
+feh
+swww
+rofi
+picom
+
+# i3wm (meta package only, no i3-wm to avoid conflict)
+i3status
+
+# Xorg
+xorg-server
+xorg-xinit
+xorg-xkill
+xorg-xrandr
+xrdb
+xorg-xsetroot
+numlockx
+xf86-input-libinput
+mesa
+vulkan-radeon
+lib32-mesa
+xf86-video-intel
+xf86-video-amdgpu
+xf86-video-ati
+xf86-video-nouveau
+xf86-video-fbdev
+xf86-video-vesa
+
+# System services
+polkit-gnome
+bluez
+bluez-utils
+blueman
+cups
+lsb-release
+
+# Display manager
+lightdm
+lightdm-slick-greeter
+
+# Installer
+cachyos-calamares-qt6-grub
+os-prober
+python-jsonschema
+
+# ArchCosta meta
+archcosta-i3wm
