@@ -1,0 +1,25 @@
+#!/bin/sh
+# ArchCosta Session Selector
+# Used by SDDM/LightDM to select the best available session
+
+# Priority order for sessions
+WAYLAND_SESSIONS="hyprland sway plasma gnome wayfire river niri"
+X11_SESSIONS="plasma xfce cinnamon mate gnome bspwm openbox i3"
+
+# Check for available sessions in order
+for session in $WAYLAND_SESSIONS; do
+    if [ -f "/usr/share/wayland-sessions/${session}.desktop" ]; then
+        echo "${session}.desktop"
+        exit 0
+    fi
+done
+
+for session in $X11_SESSIONS; do
+    if [ -f "/usr/share/xsessions/${session}.desktop" ]; then
+        echo "${session}.desktop"
+        exit 0
+    fi
+done
+
+# Fallback to XFCE
+echo "xfce.desktop"
