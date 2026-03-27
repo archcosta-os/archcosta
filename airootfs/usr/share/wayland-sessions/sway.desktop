@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Sway
+Comment=SiMPle Wayland Workspace
+Exec=sway
+Type=Application
+Keywords=tiling;wayland;window;

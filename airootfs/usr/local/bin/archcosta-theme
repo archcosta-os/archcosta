@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Archcraft-style pywal theming script
+# Generates colors from wallpaper for all applications
+
+set -euo pipefail
+
+WALLPAPER_DIR="/usr/share/backgrounds/archcosta"
+CACHE_DIR="$HOME/.cache/wal"
+CONFIG_DIR="$HOME/.config"
+
+log() { echo "[pywal] $*"; }
+
+main() {
+    local wallpaper="${1:-$WALLPAPER_DIR/default.jpg}"
+    
+    if [ ! -f "$wallpaper" ]; then
+        log "Wallpaper not found: $wallpaper"
+        return 1
+    fi
+    
+    log "Generating colors from: $wallpaper"
+    
+    # Generate pywal colors
+    wal -i "$wallpaper" -n -q 2>/dev/null || {
+        log "pywal not installed, using feh instead"
+        feh --bg-fill "$wallpaper"
+        return 0
+    }
+    
+    # Apply to terminals
+    for term in alacritty kitty wezterm foot; do
+        if command -v "$term" &>/dev/null; then
+            log "Applying colors to $term..."
+            "$term" reload
+        fi
+    done
+    
+    # Apply to GTK apps
+    source "$CACHE_DIR/colors.sh"
+    
+    # Apply to Rofi
+    if [ -f "$CONFIG_DIR/rofi/theme.rasi" ]; then
+        cat > "$CONFIG_DIR/rofi/colors.rasi" << EOF
+* {
+    background: ${color0:-#1e1e1e};
+    foreground: ${color7:-#eeeeee};
+    primary: ${color1:-#eb5251};
+    secondary: ${color2:-#7fdbca};
+    urgent: ${color3:-#ff6b6b};
+}
+EOF
+    fi
+    
+    log "Theme applied successfully!"
+}
+
+main "$@"

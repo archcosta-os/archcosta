@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# Fastfetch config for Archcraft-style system info display
+# Shows Arch logo with system info
+
+cat << 'EOF'
+{
+  "$schema": "fastfetch:2",
+  "modules": [
+    {
+      "type": "os",
+      "key": "OS",
+      "format": "{value}",
+      "osName": "Arch Linux"
+    },
+    {
+      "type": "host",
+      "format": "{value}"
+    },
+    {
+      "type": "kernel",
+      "key": "Kernel",
+      "format": "{value}"
+    },
+    {
+      "type": "uptime",
+      "key": "Uptime",
+      "format": "{value}"
+    },
+    {
+      "type": "packages",
+      "key": "Packages",
+      "format": "{value} (pacman)"
+    },
+    {
+      "type": "shell",
+      "key": "Shell",
+      "format": "{value}"
+    },
+    {
+      "type": "resolution",
+      "key": "Resolution",
+      "format": "{value}"
+    },
+    {
+      "type": "de",
+      "key": "DE",
+      "format": "{value}"
+    },
+    {
+      "type": "wm",
+      "key": "WM",
+      "format": "{value}"
+    },
+    {
+      "type": "terminal",
+      "key": "Terminal",
+      "format": "{value}"
+    },
+    {
+      "type": "cpu",
+      "key": "CPU",
+      "format": "{value}"
+    },
+    {
+      "type": "gpu",
+      "key": "GPU",
+      "format": "{value}"
+    },
+    {
+      "type": "memory",
+      "key": "Memory",
+      "format": "{value}"
+    }
+  ],
+  "logo": {
+    "type": "ascii",
+    "source": "auto",
+    "color": true
+  },
+  "colors": {
+    "name": "distro",
+    "flags": true
+  }
+}
+EOF
