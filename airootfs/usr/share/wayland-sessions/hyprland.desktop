@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Hyprland
+Comment=Modern Wayland compositor
+Exec=Hyprland
+Type=Application
+Keywords=wayland;compositor;
