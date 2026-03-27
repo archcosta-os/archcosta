@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Wayfire
-Comment=Wayfire compositor
-Exec=wayfire
-Type=Application
-Keywords=wayland;compositor;3d;

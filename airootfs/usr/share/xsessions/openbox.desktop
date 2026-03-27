@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Openbox
-Comment=Standard Openbox session
-Exec=openbox-session
-Type=Application
-Keywords=window;manager; tiling;
