@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Openbox RC - ArchCosta Premium -->
+
+<openbox_config xmlns="http://openbox.org/3.5/rc">
+
+  <!-- Theme -->
+  <theme>
+    <name>ArchCraft</name>
+    <titleLayout>NLSE</titleLayout>
+    <font>
+      <name>Noto Sans</name>
+      <size>10</size>
+    </font>
+    <width>2</width>
+    <height>2</height>
+    <justification>Center</justification>
+
+    <window_handle>
+      <color>#1e1e1e</color>
+    </window_handle>
+
+    <window_title>
+      <color>#1e1e1e</color>
+      <text color="#eeeeee">
+        <font>Noto Sans</font>
+      </text>
+      <padding>2</padding>
+    </window_title>
+
+    <active>
+      <text color="#eeeeee"/>
+      <title color="#eeeeee"/>
+      <handle color="#7fdbca"/>
+      <color>#7fdbca</color>
+    </active>
+
+    <inactive>
+      <text color="#888888"/>
+      <title color="#888888"/>
+      <handle color="#444444"/>
+      <color>#444444</color>
+    </inactive>
+  </theme>
+
+  <!-- Desktop -->
+  <desktops>
+    <number>10</number>
+    <firstdesk>1</firstdesk>
+    <names>
+      <name>1</name>
+      <name>2</name>
+      <name>3</name>
+      <name>4</name>
+      <name>5</name>
+      <name>6</name>
+      <name>7</name>
+      <name>8</name>
+      <name>9</name>
+      <name>10</name>
+    </names>
+    <popupTime>0</popupTime>
+  </desktops>
+
+  <!-- Margins -->
+  <margins>
+    <top>0</top>
+    <bottom>0</bottom>
+    <left>0</left>
+    <right>0</right>
+  </margins>
+
+  <!-- Dock -->
+  <dock>
+    <position>TopLeft</position>
+    <floatingX>0</floatingX>
+    <floatingY>0</floatingY>
+    <noStrut>false</noStrut>
+    <stacking>Above</stacking>
+    <direction>Vertical</direction>
+    <masking>false</masking>
+    <hideShow>Disabled</hideShow>
+    <hideDelay>0</hideDelay>
+    <hideTransitions>false</hideTransitions>
+    <iconspacing>4</iconspacing>
+    <iconCount>0</iconCount>
+    <autoHide>false</autoHide>
+    <treatAsFile>false</treatAsFile>
+  </dock>
+
+  <!-- Resize -->
+  <resize>
+    <drawContents>true</drawContents>
+    <popupShow>NonStrict</popupShow>
+    <popupPosition>Center</popupPosition>
+    <popupTime>0</popupTime>
+  </resize>
+
+  <!-- Focus -->
+  <focus>
+    <raiseOnFocus>false</raiseOnFocus>
+    <focusLast>true</focusLast>
+    <followMouse>false</followMouse>
+    <followMouseSpeed>0</followMouseSpeed>
+    <focusRaise>false</focusRaise>
+    <newWindowIfOther>false</newWindowIfOther>
+    <shadeFocus>false</shadeFocus>
+    <mouseWarping>None</mouseWarping>
+    <mouseStick>true</mouseStick>
+    <sloppyFocus>true</sloppyFocus>
+    <autoRaise>false</autoRaise>
+    <raiseDelay>0</raiseDelay>
+  </focus>
+
+  <!-- Placement -->
+  <placement>
+    <policy>Smart</policy>
+    <center>current</center>
+    <monitor>current</monitor>
+    <primaryMonitor>current</primaryMonitor>
+    <respectWorkarea>true</respectWorkarea>
+    <keepWindowInformation>false</keepWindowInformation>
+  </placement>
+
+  <!-- Appearance -->
+  <appearance>
+    <decorations>default</decorations>
+    <blur>true</blur>
+    <transucent>true</transucent>
+    <shadow>true</shadow>
+    <edgesToResize>all</edgesToResize>
+    <roundCorners>true</roundCorners>
+    <cornerRadius>8</cornerRadius>
+    <titleBarOnTop>true</titleBarOnTop>
+    <frameWidth>2</frameWidth>
+    <framePadding>0</framePadding>
+  </appearance>
+
+  <!-- Mouse -->
+  <mouse>
+    <dragThreshold>0</dragThreshold>
+    <raiseDelay>0</raiseDelay>
+    <middleButton>raise</middleButton>
+    <rightButton>menu</rightButton>
+    <superRightButton>none</superRightButton>
+    <altLeftButton>move</altLeftButton>
+    <altRightButton>resize</altRightButton>
+    <doubleClickTime>200</doubleClickTime>
+    <doubleClickDelta>0</doubleClickDelta>
+  </mouse>
+
+  <!-- Keyboard -->
+  <keyboard>
+    <chainQuitKey>C</chainQuitKey>
+
+    <keybind key="W-Return">
+      <action name="Execute">
+        <command>alacritty</command>
+      </action>
+    </keybind>
+
+    <keybind key="W-d">
+      <action name="Execute">
+        <command>rofi -show drun</command>
+      </action>
+    </keybind>
+
+    <keybind key="W-F4">
+      <action name="Close"/>
+    </keybind>
+
+    <keybind key="W-Escape">
+      <action name="Execute">
+        <command>wlogout</command>
+      </action>
+    </keybind>
+
+    <keybind key="W-l">
+      <action name="Execute">
+        <command>swaylock</command>
+      </action>
+    </keybind>
+
+    <keybind key="W-S-r">
+      <action name="Restart"/>
+    </keybind>
+
+    <keybind key="W-S-q">
+      <action name="Exit">
+        <command>openbox --exit</command>
+      </action>
+    </keybind>
+
+    <!-- Volume -->
+    <keybind key="XF86AudioRaiseVolume">
+      <action name="Execute">
+        <command>pactl set-sink-volume @DEFAULT_SINK@ +5%</command>
+      </action>
+    </keybind>
+
+    <keybind key="XF86AudioLowerVolume">
+      <action name="Execute">
+        <command>pactl set-sink-volume @DEFAULT_SINK@ -5%</command>
+      </action>
+    </keybind>
+
+    <keybind key="XF86AudioMute">
+      <action name="Execute">
+        <command>pactl set-sink-mute @DEFAULT_SINK@ toggle</command>
+      </action>
+    </keybind>
+
+    <!-- Screenshot -->
+    <keybind key="Print">
+      <action name="Execute">
+        <command>maim -s -u | xclip -selection clipboard -t image/png</command>
+      </action>
+    </keybind>
+  </keyboard>
+
+  <!-- Applications -->
+  <applications>
+    <application name="firefox">
+      <desktop>2</desktop>
+      <maximized>true</maximized>
+    </application>
+
+    <application name="alacritty">
+      <decorations>none</decorations>
+    </application>
+
+    <application class="Rofi">
+      <layer>top</layer>
+      <dialog>true</dialog>
+      <skipTaskbar>true</skipTaskbar>
+    </application>
+  </applications>
+
+</openbox_config>

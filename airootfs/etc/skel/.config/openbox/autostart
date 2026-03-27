@@ -1,0 +1,37 @@
+#!/bin/sh
+# Openbox autostart - ArchCosta
+
+# === WALLPAPER ===
+swww-daemon &
+sleep 1
+swww img /usr/share/backgrounds/archcosta/default.jpg --transition-type any &
+
+# === THEME ===
+xrdb -merge ~/.config/colors/colors.xresources &
+
+# === COMPOSITOR ===
+picom --config ~/.config/picom.conf &
+
+# === NOTIFICATIONS ===
+dunst &
+
+# === POLYBAR ===
+~/.config/polybar/launch.sh &
+
+# === KEYBOARD ===
+setxkbmap -option caps:escape &
+
+# === MOUSE ===
+xinput set-prop "pointer:SynPS/2 Synaptics TouchPad" "libinput Tapping Enabled" 1 &
+
+# === SCREEN ===
+xset -dpms &
+xset s off &
+
+# === APPLETS ===
+nm-applet &
+blueman-applet &
+volumeicon &
+
+# === POLKIT ===
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &

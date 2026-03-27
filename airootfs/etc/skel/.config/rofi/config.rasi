@@ -1,0 +1,88 @@
+/* ArchCosta Rofi Config */
+
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    display-drun: "Apps";
+    display-run: "Run";
+    display-window: "Windows";
+    drun-display-format: "{name}";
+    run-display-format: "{name}";
+    window-format: "{w} - {c}";
+}
+
+* {
+    bg: #1e1e1e;
+    bg-alt: #2d2d2d;
+    fg: #eeeeee;
+    primary: #eb5251;
+    secondary: #7fdbca;
+    urgent: #ff6b6b;
+    font: "Noto Sans 12";
+}
+
+window {
+    background-color: @bg;
+    border: 2px;
+    border-color: @secondary;
+    border-radius: 8px;
+    width: 500px;
+    location: center;
+    anchor: center;
+    y-offset: -100;
+}
+
+mainbox {
+    padding: 8px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border: 0px;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 0 0 8px 0;
+}
+
+prompt {
+    foreground: @primary;
+    background-color: transparent;
+}
+
+entry {
+    foreground: @fg;
+    background-color: transparent;
+    placeholder-color: #888888;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    fixed-height: true;
+    cycle: true;
+    scrollbar: false;
+}
+
+element {
+    background-color: transparent;
+    border: 0px;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+element selected {
+    background-color: @primary;
+    text-color: @fg;
+}
+
+element-text {
+    foreground: @fg;
+    background-color: transparent;
+}
+
+element-icon {
+    foreground: @fg;
+    background-color: transparent;
+    size: 24px;
+}

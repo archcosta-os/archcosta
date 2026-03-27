@@ -1,0 +1,112 @@
+# Sway Config - ArchCosta Premium
+
+# === KEYBOARD ===
+input * {
+    xkb_layout us
+    xkb_options caps:escape
+}
+
+# === DISPLAY ===
+output * bg /usr/share/backgrounds/archcosta/default.jpg fill
+
+# === WINDOW ===
+for_window {
+    border none
+    title_format "<span font='10'> %title </span>"
+    seat * hide_cursor when-typing enabled
+}
+
+# === GAPS ===
+smart_gaps on
+gaps inner 8
+gaps outer 4
+
+# === BORDERS ===
+default_border pixel 2
+default_floating_border pixel 1
+
+# === BAR ===
+bar {
+    position top
+    height 28
+    status_command waybar
+    workspace_min_width 40
+    strip_workspace_numbers yes
+    tray_padding 4
+    color = #1e1e1e80
+}
+
+# === KEYBINDS ===
+set $mod Mod4
+set $term alacritty
+set $menu rofi -show drun
+
+# Super keys
+$mod+Return exec $term
+$mod+D exec $menu
+$mod+Q kill
+$mod+Shift+E exec wlogout
+$mod+L exec swaylock -f
+$mod+Shift+R reload
+$mod+Shift+C exec swaymsg reload
+
+# Window controls
+$mod+Left focus left
+$mod+Right focus right
+$mod+Up focus up
+$mod+Down focus down
+$mod+Shift+Left move left
+$mod+Shift+Right move right
+$mod+Shift+Up move up
+$mod+Shift+Down move down
+
+# Layout
+$mod+H split h
+$mod+V split v
+$mod+F fullscreen
+$mod+Space floating toggle
+$mod+S layout stacking
+$mod+W layout tabbed
+
+# Workspaces
+$mod+1 workspace 1
+$mod+2 workspace 2
+$mod+3 workspace 3
+$mod+4 workspace 4
+$mod+5 workspace 5
+$mod+6 workspace 6
+$mod+7 workspace 7
+$mod+8 workspace 8
+$mod+9 workspace 9
+$mod+0 workspace 10
+$mod+Shift+1 move container to workspace 1
+$mod+Shift+2 move container to workspace 2
+$mod+Shift+3 move container to workspace 3
+$mod+Shift+4 move container to workspace 4
+$mod+Shift+5 move container to workspace 5
+$mod+Shift+6 move container to workspace 6
+$mod+Shift+7 move container to workspace 7
+$mod+Shift+8 move container to workspace 8
+$mod+Shift+9 move container to workspace 9
+$mod+Shift+0 move container to workspace 10
+
+# Multimedia
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86MonBrightnessUp exec brightnessctl s +5%
+bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
+
+# Screenshot
+bindsym Print exec grim -g "$(slop)" - | wl-copy
+bindsym Shift+Print exec grim - | wl-copy
+
+# === EXEC ===
+exec waybar
+exec dunst
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec NetworkManagerApplet
+exec blueman-applet

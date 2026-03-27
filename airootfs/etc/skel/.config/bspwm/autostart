@@ -1,0 +1,31 @@
+#!bin/sh
+# Bspwm autostart
+
+# === THEME ===
+xrdb -merge ~/.config/bspwm/themes/archcraft/colors 2>/dev/null || true
+
+# === PANEL ===
+~/.config/bspwm/panel/panelbar &
+
+# === POLYBAR ===
+# polybar -c ~/.config/polybar/config.ini top &
+
+# === COMPOSITOR ===
+picom --config ~/.config/picom.conf &
+
+# === NOTIFICATIONS ===
+dunst &
+
+# === APPLETS ===
+nm-applet &
+blueman-applet &
+volumeicon &
+
+# === POLKIT ===
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+# === CURSOR ===
+xsetroot -cursor_name left_ptr &
+
+# === SCREENSAVER ===
+xset s off -dpms 0 0 &
