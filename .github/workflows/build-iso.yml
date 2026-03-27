@@ -183,7 +183,9 @@ jobs:
       - name: Compress ISO (for GitHub Release limit)
         run: |
           ISO_FILE=$(ls /tmp/out/*.iso)
-          7z a -mx=3 "${ISO_FILE}.7z" "$ISO_FILE"
+          echo "ISO size: $(du -h "$ISO_FILE" | cut -f1)"
+          7z a -mx=9 "${ISO_FILE}.7z" "$ISO_FILE"
+          echo "Compressed size: $(du -h "${ISO_FILE}.7z" | cut -f1)"
 
       - name: Upload ISO artifact (GitHub)
         if: always()
