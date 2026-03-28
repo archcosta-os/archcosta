@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Openbox
-Comment=Highly configurable window manager
-Exec=openbox-session
-Type=Application
-Keywords=window;manager;x11;

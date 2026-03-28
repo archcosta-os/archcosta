@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=GNOME
-Comment=GNOME Desktop Environment (Xorg)
-Exec=gnome-session
-Type=Application
-Keywords=desktop;gnome;gnome3;

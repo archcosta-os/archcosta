@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Niri
-Comment=Scrollable-tiling Wayland compositor
-Exec=niri
-Type=Application
-Keywords=wayland;tiling;scrollable;
