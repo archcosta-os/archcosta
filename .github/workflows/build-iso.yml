@@ -139,6 +139,22 @@ jobs:
           cp syslinux/syslinux-${KERNEL}.cfg syslinux/syslinux.cfg
           cp efiboot/loader/entries/archcosta-${KERNEL}.conf efiboot/loader/entries/archcosta.conf
           
+          # Update GRUB config for kernel
+          case "$KERNEL" in
+            linux-zen)
+              sed -i 's/vmlinuz-linux$/vmlinuz-linux-zen/' grub/grub.cfg
+              sed -i 's/initramfs-linux.img$/initramfs-linux-zen.img/' grub/grub.cfg
+              ;;
+            linux-lts)
+              sed -i 's/vmlinuz-linux$/vmlinuz-linux-lts/' grub/grub.cfg
+              sed -i 's/initramfs-linux.img$/initramfs-linux-lts.img/' grub/grub.cfg
+              ;;
+            linux-cachyos)
+              sed -i 's/vmlinuz-linux$/vmlinuz-linux-cachyos/' grub/grub.cfg
+              sed -i 's/initramfs-linux.img$/initramfs-linux-cachyos.img/' grub/grub.cfg
+              ;;
+          esac
+          
           # Set correct user-session for each desktop/WM
           case "$DESKTOP" in
             xfce) sed -i 's/^user-session=.*/user-session=xfce/' airootfs/etc/lightdm/lightdm.conf ;;
