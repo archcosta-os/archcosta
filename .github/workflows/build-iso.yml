@@ -139,6 +139,26 @@ jobs:
           cp syslinux/syslinux-${KERNEL}.cfg syslinux/syslinux.cfg
           cp efiboot/loader/entries/archcosta-${KERNEL}.conf efiboot/loader/entries/archcosta.conf
           
+          # Set correct user-session for each desktop/WM
+          case "$DESKTOP" in
+            xfce) sed -i 's/^user-session=.*/user-session=xfce/' airootfs/etc/lightdm/lightdm.conf ;;
+            plasma) sed -i 's/^user-session=.*/user-session=plasma/' airootfs/etc/lightdm/lightdm.conf ;;
+            cinnamon) sed -i 's/^user-session=.*/user-session=cinnamon/' airootfs/etc/lightdm/lightdm.conf ;;
+            mate) sed -i 's/^user-session=.*/user-session=mate/' airootfs/etc/lightdm/lightdm.conf ;;
+            gnome) sed -i 's/^user-session=.*/user-session=gnome/' airootfs/etc/lightdm/lightdm.conf ;;
+            hyprland) sed -i 's/^user-session=.*/user-session=hyprland/' airootfs/etc/lightdm/lightdm.conf ;;
+            sway) sed -i 's/^user-session=.*/user-session=sway/' airootfs/etc/lightdm/lightdm.conf ;;
+            bspwm) sed -i 's/^user-session=.*/user-session=bspwm/' airootfs/etc/lightdm/lightdm.conf ;;
+            openbox) sed -i 's/^user-session=.*/user-session=openbox/' airootfs/etc/lightdm/lightdm.conf ;;
+            wayfire) sed -i 's/^user-session=.*/user-session=wayfire/' airootfs/etc/lightdm/lightdm.conf ;;
+            river) sed -i 's/^user-session=.*/user-session=river/' airootfs/etc/lightdm/lightdm.conf ;;
+            niri) sed -i 's/^user-session=.*/user-session=niri/' airootfs/etc/lightdm/lightdm.conf ;;
+            i3wm) sed -i 's/^user-session=.*/user-session=i3/' airootfs/etc/lightdm/lightdm.conf ;;
+          esac
+          
+          echo "==> LightDM user-session configured for $DESKTOP"
+          grep "^user-session" airootfs/etc/lightdm/lightdm.conf
+          
           echo "==> Final packages.x86_64:"
           tail -n 10 packages.x86_64
 
