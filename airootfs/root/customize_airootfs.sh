@@ -34,10 +34,33 @@ enable_services() {
 configure_live_user() {
     log "Configuring live user..."
     
-    # Ensure live user exists and has correct groups
-    if id "live" &>/dev/null; then
-        usermod -a -G wheel,audio,video,optical,storage,network,power,live "live" 2>/dev/null || true
+    # Create live user with no password
+    if ! id "live" &>/dev/null; then
+        log "Creating live user..."
+        useradd -m -p "" -G wheel,optical,storage,video,audio,network -s /bin/bash live
+    else
+        log "Live user already exists, updating groups..."
+        usermod -a -G wheel,optical,storage,video,audio,network live 2>/dev/null || true
     fi
+    
+    # Set autologin for getty (fallback shell access)
+    log "Configuring getty autologin..."
+    mkdir -p /etc/systemd/system/getty@tty1.service.d
+    cat > /etc/systemd/system/getty@tty1.service.d/autologin.conf << 'AUTOLOGIN'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty -o '-p -f -- \u' --noclear --autologin live - $TERM
+AUTOLOGIN
+    
+    # Create live user home skeleton
+    log "Setting up live user home..."
+    mkdir -p /home/live
+    cp -a /etc/skel/. /home/live/
+    chown -R live:live /home/live
+    
+    # Set default target to graphical
+    log "Setting default target to graphical..."
+    systemctl set-default graphical.target
 }
 
 # Set hostname
