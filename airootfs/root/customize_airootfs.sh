@@ -34,13 +34,13 @@ enable_services() {
 configure_live_user() {
     log "Configuring live user..."
     
-    # Create live user with no password
+    # Create live user with no password - matching EndeavourOS groups
     if ! id "live" &>/dev/null; then
         log "Creating live user..."
-        useradd -m -p "" -G wheel,optical,storage,video,audio,network -s /bin/bash live
+        useradd -m -p "" -g 'live' -G 'sys,rfkill,wheel,uucp,nopasswdlogin,adm,tty' -s /bin/bash live
     else
         log "Live user already exists, updating groups..."
-        usermod -a -G wheel,optical,storage,video,audio,network live 2>/dev/null || true
+        usermod -a -G 'sys,rfkill,wheel,uucp,nopasswdlogin,adm,tty' live 2>/dev/null || true
     fi
     
     # Set autologin for getty (fallback shell access)

@@ -1,9 +1,9 @@
 root:x:0:root
-live:x:1000:live
-wheel:x:10:root,live
-video:x:86:live
-audio:x:87:live
-storage:x:93:live
-network:x:99:live
-power:x:98:live
+adm:x:4:live
+wheel:x:10:live
+uucp:x:14:live
 nopasswdlogin:x:966:live
+rfkill:x:983:live
+sys:x:3:bin,live
+tty:x:5:live
+live:x:1000:live
