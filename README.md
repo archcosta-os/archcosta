@@ -51,7 +51,7 @@ Full list in `Documents/Keybindings`.
 - **Packages**: Edit `packages.x86_64`
 - **Colors**: `~/.config/{mango,waybar,rofi,foot,mako}/`
 
-4 wallpapers included in `Backgrounds/`.
+5 wallpapers included in `Backgrounds/`.
 
 ## License
 
