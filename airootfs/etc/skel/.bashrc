@@ -2,6 +2,7 @@
 export EDITOR=vim
 export TERMINAL=foot
 export BROWSER=firefox
+export QT_QPA_PLATFORMTHEME=qt6ct
 
 # Add scripts path safely
 if [[ ":$PATH:" != *":$HOME/Scripts:"* ]]; then
