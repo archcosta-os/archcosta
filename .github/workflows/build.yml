@@ -1,0 +1,39 @@
+name: Build ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      verbose:
+        description: 'Verbose output'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --needed --noconfirm archiso archlinux-keyring git
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build ISO
+        run: |
+          ARGS=""
+          if [ "${{ inputs.verbose }}" = "true" ]; then
+            ARGS="-v"
+          fi
+          ./build $ARGS .
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: archcosta-${{ github.run_number }}
+          path: out/*.iso
+          retention-days: 14
