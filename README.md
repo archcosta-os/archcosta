@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="syslinux/splash.png" alt="ArchCosta" width="400"/>
+  <img src="syslinux/splash.png" alt="ArchCosta Logo" width="560"/>
 </p>
 
 <h1 align="center">ArchCosta</h1>
@@ -18,6 +18,18 @@
 ---
 
 A lightweight Arch Linux live ISO with MangoWM, Waybar, Rofi, Foot, and a custom dark purple palette. Built on [archiso](https://wiki.archlinux.org/title/Archiso).
+
+## Wallpapers
+
+<p align="center">
+  <img src="airootfs/etc/skel/Backgrounds/coastal-twilight.jpg" width="45%"/>
+  <img src="airootfs/etc/skel/Backgrounds/digital-waves.jpg" width="45%"/>
+  <br><br>
+  <img src="airootfs/etc/skel/Backgrounds/mountain-coast.jpg" width="45%"/>
+  <img src="airootfs/etc/skel/Backgrounds/sea-cave.jpg" width="45%"/>
+  <br><br>
+  <img src="airootfs/etc/skel/Backgrounds/starry-ocean.jpg" width="45%"/>
+</p>
 
 ## Build
 
@@ -50,8 +62,6 @@ Full list in `Documents/Keybindings`.
 - **Wallpaper**: Edit `~/.config/mango/config.conf` (`exec-once=swaybg -i ...`)
 - **Packages**: Edit `packages.x86_64`
 - **Colors**: `~/.config/{mango,waybar,rofi,foot,mako}/`
-
-5 wallpapers included in `Backgrounds/`.
 
 ## License
 
