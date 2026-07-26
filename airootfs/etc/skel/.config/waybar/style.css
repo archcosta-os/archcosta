@@ -81,7 +81,7 @@ window#waybar {
 }
 
 /* ---------- Common section styling ---------- */
-#tray, #battery, #network {
+#tray, #battery, #network, #pulseaudio {
     margin: 0;
     padding: 0 8px;
     color: @fg;
@@ -118,6 +118,17 @@ window#waybar {
 /* ---------- Tray ---------- */
 #tray {
     padding: 0 6px;
+}
+
+/* ---------- Pulseaudio ---------- */
+#pulseaudio {
+    font-family: "Symbols Nerd Font Mono";
+    font-size: 14px;
+    color: @accent;
+}
+
+#pulseaudio.muted {
+    color: @fg-dim;
 }
 
 /* ---------- Tooltips ---------- */
