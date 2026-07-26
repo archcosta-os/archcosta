@@ -1,3 +1,4 @@
+[general]
 max-size=30
 default-timeout=5000
 padding=10
@@ -6,6 +7,21 @@ border-radius=5
 border-size=1
 font=JetBrains Mono 10
 anchor=top-right
+max-visible=5
+actions=1
+icons=1
+
+[urgency=low]
+default-timeout=3000
+
+[urgency=normal]
+default-timeout=5000
+
+[urgency=critical]
+default-timeout=0
+border-color=#f2729a
+
+[colors]
 background-color=#1a1025cc
 text-color=#e0d0e8
 border-color=#c0568b
