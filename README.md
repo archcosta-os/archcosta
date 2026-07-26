@@ -19,18 +19,6 @@
 
 A lightweight Arch Linux live ISO with MangoWM, Waybar, Rofi, Foot, and a custom dark purple palette. Built on [archiso](https://wiki.archlinux.org/title/Archiso).
 
-## Wallpapers
-
-<p align="center">
-  <img src="airootfs/etc/skel/Backgrounds/coastal-twilight.jpg" width="45%"/>
-  <img src="airootfs/etc/skel/Backgrounds/digital-waves.jpg" width="45%"/>
-  <br><br>
-  <img src="airootfs/etc/skel/Backgrounds/mountain-coast.jpg" width="45%"/>
-  <img src="airootfs/etc/skel/Backgrounds/sea-cave.jpg" width="45%"/>
-  <br><br>
-  <img src="airootfs/etc/skel/Backgrounds/starry-ocean.jpg" width="45%"/>
-</p>
-
 ## Build
 
 ```bash
