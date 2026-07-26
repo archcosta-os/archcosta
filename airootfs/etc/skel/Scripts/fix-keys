@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Initialize pacman keyring
+
+echo "Initializing pacman keyring..."
+sudo pacman-key --init
+sudo pacman-key --populate archlinux
+echo "Done!"

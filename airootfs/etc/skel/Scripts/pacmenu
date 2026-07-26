@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# ArchCosta Pacman menu
+
+OPTIONS="Update System\nInstall Package\nRemove Package\nClean Cache\nUpdate Mirrors"
+
+echo -e "$OPTIONS" | rofi -dmenu -i -p "Pacman" \
+    -theme-str "listview {lines: 5;}" | {
+    read -r selected
+    case $selected in
+        "Update System")
+            foot -e sudo pacman -Syu
+            ;;
+        "Install Package")
+            pkg=$(rofi -dmenu -p "Package name:")
+            [[ -n "$pkg" ]] && foot -e sudo pacman -S "$pkg"
+            ;;
+        "Remove Package")
+            pkg=$(rofi -dmenu -p "Package name:")
+            [[ -n "$pkg" ]] && foot -e sudo pacman -Rns "$pkg"
+            ;;
+        "Clean Cache")
+            foot -e sudo pacman -Scc
+            ;;
+        "Update Mirrors")
+            foot -e sudo reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+            ;;
+    esac
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ArchCosta power menu
+
+OPTIONS="Logout\nReboot\nPower Off"
+
+echo -e "$OPTIONS" | rofi -dmenu -i -p "Power" \
+    -theme-str "listview {lines: 3;}" | {
+    read -r selected
+    case $selected in
+        "Logout")
+            mango --msg quit
+            ;;
+        "Reboot")
+            systemctl reboot
+            ;;
+        "Power Off")
+            systemctl poweroff
+            ;;
+    esac
+}

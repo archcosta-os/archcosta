@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# ArchCosta main menu launcher
+
+rofi -show drun \
+    -show-icons \
+    -theme-str "listview {lines: 10;}" \
+    -p "ArchCosta"

@@ -1,0 +1,151 @@
+## === AUDIO ===
+pipewire
+pipewire-pulse
+
+## === ARCHIVE TOOLS ===
+zip
+unzip
+p7zip
+xz
+
+## === TERMINAL ===
+foot
+
+## === WAYLAND DESKTOP ENVIRONMENT ===
+mangowm-git
+swaybg
+waybar
+xorg-xwayland
+wlr-randr
+grim
+slurp
+wl-clipboard
+brightnessctl
+swaylock
+mako
+reflector
+rofi
+
+## === FILE MANAGER & UTILITIES ===
+thunar
+thunar-volman
+gvfs
+udisks2
+
+## === TEXT EDITORS ===
+vim
+l3afpad
+
+## === THEMES & FONTS ===
+adw-gtk-theme
+adwaita-icon-theme
+ttf-jetbrains-mono
+ttf-nerd-fonts-symbols-mono
+ttf-dejavu
+
+## === SYSTEM MONITORING ===
+htop
+fastfetch
+laptop-detect
+
+## === DISK & PARTITION TOOLS ===
+gparted
+parted
+gptfdisk
+ddrescue
+testdisk
+ntfs-3g
+
+## === NETWORK MANAGEMENT ===
+networkmanager
+networkmanager-dmenu-git
+usb_modeswitch
+broadcom-wl
+
+## === DESKTOP UTILITIES ===
+polkit
+libsecret
+xdg-user-dirs
+
+## === SYSTEM TOOLS ===
+dialog
+sudo
+fontconfig
+kbd
+
+## === COMMAND-LINE TOOLS ===
+openssh
+arch-install-scripts
+curl
+pacman-contrib
+fzf
+eza
+
+## === MEDIA APPLICATIONS ===
+firefox
+imv
+
+## === BUILD & DEVELOPMENT TOOLS ===
+squashfs-tools
+rsync
+pv
+dosfstools
+btrfs-progs
+
+## === BOOTLOADER & FIRMWARE ===
+grub
+os-prober
+lsb-release
+syslinux
+efibootmgr
+intel-ucode
+amd-ucode
+
+## === CORE SYSTEM PACKAGES (Arch Linux base) ===
+bash
+bzip2
+coreutils
+cryptsetup
+device-mapper
+diffutils
+e2fsprogs
+file
+filesystem
+findutils
+gawk
+gcc-libs
+gettext
+glibc
+grep
+gzip
+inetutils
+iproute2
+iputils
+less
+licenses
+linux
+linux-firmware
+logrotate
+lvm2
+man-db
+man-pages
+nano
+vi
+pacman
+pciutils
+perl
+procps-ng
+psmisc
+sed
+shadow
+sysfsutils
+systemd-sysvcompat
+tar
+usbutils
+util-linux
+which
+memtest86+
+memtest86+-efi
+mkinitcpio
+mkinitcpio-archiso
+archlinux-keyring

@@ -1,0 +1,39 @@
+About ArchCosta
+===============
+
+ArchCosta is a personal Arch Linux-based distribution featuring the
+MangoWM Wayland compositor. It is designed to be minimal, fast, and
+visually distinctive with a custom dark purple/rose color palette.
+
+Based on the archiso build system, ArchCosta provides a ready-to-use
+live environment with a curated selection of tools and a polished
+Wayland desktop experience.
+
+Features
+--------
+- Pure Wayland environment with MangoWM compositor
+- Custom dark purple/rose color scheme
+- Waybar panel with workspace indicators
+- Rofi application launcher (Super+Space)
+- Mako notification daemon
+- Foot terminal emulator with JetBrains Mono font
+- Swaybg wallpaper manager
+- Thunar file manager
+- NetworkManager with rofi integration
+- Built-in TUI installer (abinstall)
+- Browser-based installer (abi-install)
+
+Color Palette
+-------------
+- Background:    #1a1025
+- Surface:       #251848
+- Foreground:    #e0d0e8
+- Accent:        #c0568b
+- Urgent:        #f2729a
+
+Origin
+------
+ArchCosta is a personal project, inspired by and adapted from the
+archbang project. It is not affiliated with or endorsed by ArchBang.
+
+This project is released under the GPL-3.0 license.

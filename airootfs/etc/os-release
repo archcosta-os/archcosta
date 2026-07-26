@@ -1,0 +1,10 @@
+NAME="ArchCosta"
+PRETTY_NAME="ArchCosta"
+ID=archcosta
+ID_LIKE=arch
+BUILD_ID=rolling
+
+ANSI_COLOR="0;32"
+HOME_URL="https://github.com/archcosta-os"
+DOCUMENTATION_URL="https://github.com/archcosta-os/archcosta"
+SUPPORT_URL="https://github.com/archcosta-os/archcosta/issues"

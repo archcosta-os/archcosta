@@ -1,0 +1,75 @@
+Keybindings Reference
+=====================
+
+WINDOW MANAGER
+Super+Return       Open terminal
+Super+Space        Application launcher
+Super+q            Close window
+Super+s            Toggle floating
+Super+f            Toggle fullscreen
+Super+Shift+f      Toggle fake fullscreen
+Super+a            Toggle maximize screen
+Super+g            Toggle gaps
+Super+i            Minimize
+Super+o            Toggle overlay
+Super+Shift+I      Restore minimized
+Super+z            Toggle scratchpad
+Super+r            Reload config
+Super+m            Quit
+
+LAUNCH
+Super+w            Firefox browser
+Super+h            User guide (l3afpad)
+Super+p            Screenshot
+Super+Shift+s      Region screenshot
+Super+Shift+e      Power menu
+Super+Shift+p      Pacman menu
+Super+Shift+a      AUR menu
+Super+l            Lock screen
+
+FOCUS & SWAP
+Super+Tab          Cycle focus
+Super+Ctrl+Left    Focus left
+Super+Ctrl+Right   Focus right
+Super+Ctrl+Up      Focus up
+Super+Ctrl+Down    Focus down
+Super+Shift+Up     Swap up
+Super+Shift+Down   Swap down
+Super+Shift+Left   Swap left
+Super+Shift+Right  Swap right
+
+TAGS (WORKSPACES)
+Super+1-9          Switch to tag
+Super+Shift+1-9    Move window to tag
+Super+Left         View previous tag
+Super+Right        View next tag
+Ctrl+Left          View previous tag (skip empty)
+Ctrl+Right         View next tag (skip empty)
+
+FLOATING & RESIZE
+Ctrl+Shift+Up      Move window up
+Ctrl+Shift+Down    Move window down
+Ctrl+Shift+Left    Move window left
+Ctrl+Shift+Right   Move window right
+Ctrl+Super+Up      Resize window up
+Ctrl+Super+Down    Resize window down
+Ctrl+Super+Left    Resize window left
+Ctrl+Super+Right   Resize window right
+
+MONITORS
+Super+Alt+Left     Focus left monitor
+Super+Alt+Right    Focus right monitor
+Super+Ctrl+Alt+Left  Send tag to left monitor
+Super+Ctrl+Alt+Right Send tag to right monitor
+
+AUDIO
+XF86AudioRaiseVolume   Volume up
+XF86AudioLowerVolume   Volume down
+XF86AudioMute          Toggle mute
+
+LAYOUT
+Super+n            Switch layout
+Super+e            Set proportion
+Super+x            Switch proportion preset
+Super+Shift+X      Increase gaps
+Super+Shift+Z      Decrease gaps

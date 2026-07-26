@@ -1,0 +1,7 @@
+[terminal]
+terminal=foot
+
+[shortcuts]
+run=super,space
+run_browser=super,w
+run_files=super,e

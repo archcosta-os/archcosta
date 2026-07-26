@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Build and install yay from source
+
+if command -v yay &>/dev/null; then
+    echo "yay is already installed"
+    exit 0
+fi
+
+echo "Installing dependencies..."
+sudo pacman -S --needed --noconfirm git base-devel
+
+echo "Cloning yay..."
+tmpdir=$(mktemp -d)
+git clone https://aur.archlinux.org/yay-bin.git "$tmpdir/yay-bin"
+
+echo "Building yay..."
+cd "$tmpdir/yay-bin" && makepkg -si --noconfirm
+
+echo "Cleaning up..."
+rm -rf "$tmpdir"
+echo "yay installed successfully!"

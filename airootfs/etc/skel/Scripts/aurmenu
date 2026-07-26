@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# ArchCosta AUR menu
+
+OPTIONS="Install from AUR\nSearch AUR\nUpdate AUR Packages"
+
+echo -e "$OPTIONS" | rofi -dmenu -i -p "AUR" \
+    -theme-str "listview {lines: 3;}" | {
+    read -r selected
+    case $selected in
+        "Install from AUR")
+            pkg=$(rofi -dmenu -p "Package name:")
+            [[ -n "$pkg" ]] && foot -e yay -S "$pkg"
+            ;;
+        "Search AUR")
+            pkg=$(rofi -dmenu -p "Search:")
+            [[ -n "$pkg" ]] && foot -e yay -Ss "$pkg"
+            ;;
+        "Update AUR Packages")
+            foot -e yay -Sua
+            ;;
+    esac
+}

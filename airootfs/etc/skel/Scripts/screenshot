@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# ArchCosta Screenshot tool
+
+if [[ "$1" == "-r" ]]; then
+    # Region screenshot
+    grim -g "$(slurp)" - | wl-copy -t image/png
+    notify-send "Screenshot" "Region copied to clipboard"
+else
+    # Full screenshot
+    f=~/Pictures/$(date +%d%m%y%H%M).png
+    grim "$f"
+    notify-send "Screenshot" "Saved to $f"
+fi

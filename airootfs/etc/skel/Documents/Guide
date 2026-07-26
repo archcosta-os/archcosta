@@ -1,0 +1,56 @@
+ArchCosta User Guide
+=====================
+
+Welcome to ArchCosta, a minimal Arch Linux distribution with
+the MangoWM Wayland compositor.
+
+Keybindings
+-----------
+Super+Return      Open terminal (foot)
+Super+Space       Application launcher (rofi)
+Super+w           Open Firefox
+Super+q           Close window
+Super+f           Toggle fullscreen
+Super+s           Toggle floating
+Super+r           Reload MangoWM config
+Super+m           Quit MangoWM
+Super+l           Lock screen
+Super+p           Screenshot (full)
+Super+Shift+s     Screenshot (region)
+Super+Shift+e     Power menu
+Super+Shift+p     Pacman menu
+Super+Shift+a     AUR menu
+Super+h           Open this guide
+
+Tags (Workspaces)
+-----------------
+Super+1-9         Switch to tag 1-9
+Super+Shift+1-9   Move window to tag 1-9
+Super+Left/Right  Switch between tags
+Ctrl+Left/Right   Switch between tags (with clients only)
+
+Window Management
+-----------------
+Super+Tab         Cycle focus
+Super+Ctrl+Arrows Change focus direction
+Super+Shift+Arrows Swap windows
+Ctrl+Shift+Arrows Move floating window
+Ctrl+Super+Arrows Resize floating window
+Super+g           Toggle gaps
+Super+i           Minimize window
+Super+o           Toggle overlay
+Super+z           Toggle scratchpad
+
+Layout
+------
+Super+n           Switch layout (tile/scroller)
+Super+e           Set proportion to 1.0
+Super+x           Switch proportion preset
+
+Installation
+------------
+Run ~/Scripts/abinstall for the TUI installer, or
+~/Scripts/abi-install for the browser-based installer.
+
+After installation, edit /etc/skel/.config/mango/config.conf
+to customize your desktop.

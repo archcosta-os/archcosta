@@ -1,0 +1,14 @@
+[Unit]
+Description=Initialize Pacman Keyring
+Before=pacman.service
+Before=NetworkManager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/pacman-key --init
+ExecStart=/usr/bin/pacman-key --populate archlinux
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
