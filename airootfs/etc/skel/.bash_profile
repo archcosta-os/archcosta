@@ -9,5 +9,7 @@ WindowManager=mango
 if [[ -z $WAYLAND_DISPLAY && -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     export XDG_CURRENT_DESKTOP=$WindowManager
     export XDG_SESSION_TYPE=wayland
+    export WLR_RENDERER_ALLOW_SOFTWARE=1
+    export LR_RENDER_ALLOW_SOFTWARE=1
     exec $WindowManager
 fi
