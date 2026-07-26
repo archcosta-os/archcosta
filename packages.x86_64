@@ -1,6 +1,7 @@
 ## === AUDIO ===
 pipewire
 pipewire-pulse
+wireplumber
 
 ## === ARCHIVE TOOLS ===
 zip

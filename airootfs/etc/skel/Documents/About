@@ -20,8 +20,6 @@ Features
 - Swaybg wallpaper manager
 - Thunar file manager
 - NetworkManager with rofi integration
-- Built-in TUI installer (abinstall)
-- Browser-based installer (abi-install)
 
 Color Palette
 -------------
@@ -33,7 +31,8 @@ Color Palette
 
 Origin
 ------
-ArchCosta is a personal project, inspired by and adapted from the
-archbang project. It is not affiliated with or endorsed by ArchBang.
+ArchCosta is a personal project, adapted from the archiso build
+system with a custom configuration. It is not affiliated with
+or endorsed by any other distribution.
 
 This project is released under the GPL-3.0 license.

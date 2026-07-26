@@ -1,7 +1,11 @@
-[terminal]
-terminal=foot
+configuration {
+    modi:           "drun,run";
+    show-icons:     true;
+    icon-theme:     "Adwaita";
+    drun-display-format: "{name}";
+    display-drun:   "";
+    display-run:    "";
+    terminal:       "foot";
+}
 
-[shortcuts]
-run=super,space
-run_browser=super,w
-run_files=super,e
+@theme "~/.config/rofi/theme.rasi"

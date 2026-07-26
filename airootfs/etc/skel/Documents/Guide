@@ -47,10 +47,9 @@ Super+n           Switch layout (tile/scroller)
 Super+e           Set proportion to 1.0
 Super+x           Switch proportion preset
 
-Installation
-------------
-Run ~/Scripts/abinstall for the TUI installer, or
-~/Scripts/abi-install for the browser-based installer.
-
-After installation, edit /etc/skel/.config/mango/config.conf
-to customize your desktop.
+After Installation
+------------------
+1. Update the system:    sudo pacman -Syu
+2. Install yay (AUR):    ~/Scripts/install-yay
+3. Initialize keyring:   ~/Scripts/fix-keys
+4. Customize desktop:    Edit files in ~/.config/
