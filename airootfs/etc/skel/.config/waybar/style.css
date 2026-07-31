@@ -81,10 +81,65 @@ window#waybar {
 }
 
 /* ---------- Common section styling ---------- */
-#tray, #battery, #network, #pulseaudio {
+#tray, #battery, #network, #pulseaudio, #backlight, #cpu, #memory, #disk, #temperature, #mpris, #custom-power {
     margin: 0;
     padding: 0 8px;
     color: @fg;
+}
+
+/* ---------- Mpris ---------- */
+#mpris {
+    color: @fg-dim;
+    font-size: 13px;
+}
+
+#mpris.playing {
+    color: @fg;
+}
+
+/* ---------- Cpu / Memory / Disk ---------- */
+#cpu, #memory, #disk {
+    font-family: "Symbols Nerd Font Mono";
+    font-size: 13px;
+    color: @fg-dim;
+}
+
+#cpu {
+    color: @accent;
+}
+
+/* ---------- Temperature ---------- */
+#temperature {
+    font-family: "Symbols Nerd Font Mono";
+    font-size: 13px;
+    color: @fg-dim;
+}
+
+#temperature.critical {
+    color: @red;
+}
+
+#temperature.warning {
+    color: @yellow;
+}
+
+/* ---------- Backlight ---------- */
+#backlight {
+    font-family: "Symbols Nerd Font Mono";
+    font-size: 14px;
+    color: @fg-dim;
+}
+
+/* ---------- Power ---------- */
+#custom-power {
+    font-family: "Symbols Nerd Font Mono";
+    font-size: 14px;
+    color: @red;
+    padding: 0 12px;
+}
+
+#custom-power:hover {
+    color: #ffadd0;
 }
 
 /* ---------- Network ---------- */

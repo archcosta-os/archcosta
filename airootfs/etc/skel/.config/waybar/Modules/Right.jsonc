@@ -1,0 +1,14 @@
+{
+  "modules-right": [
+        "custom/power",
+	      "temperature",
+        "cpu",
+        "memory",
+        "disk",
+        "bluetooth",
+        "network",
+        "pulseaudio",
+        "backlight",
+        "battery"
+    ]
+}

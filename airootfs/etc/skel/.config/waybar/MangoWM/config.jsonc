@@ -1,0 +1,36 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "spacing": 6,
+  "reload_style_on_change": true,
+
+  "modules-left":[
+    "custom/launcher",
+    "ext/workspaces"
+],
+
+"custom/launcher": {
+  "format" : "",
+  "tooltip": false,
+  "tooltip-format": "ArchCosta Menu",
+  "on-click": "~/Scripts/archcosta-menu",
+  "on-click-right": "foot"
+},
+
+"ext/workspaces": {
+  "format": "{id}",
+  "format-icons": {
+    "active": "",
+    "default": ""
+  },
+  "on-click": "activate",
+  "sort-by-id": true,
+  "all-outputs": true,
+  "active-only": false
+},
+
+"include": [
+  "~/.config/waybar/Modules/*.jsonc"
+]
+}
