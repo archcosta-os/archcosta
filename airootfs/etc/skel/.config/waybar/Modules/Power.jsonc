@@ -3,7 +3,7 @@
         "format" : "",
         "tooltip": true,
         "tooltip-format": "Power menu",
-	      "on-click": "~/Scripts/powermenu",
+	      "on-click": "wlogout",
         "on-click-middle": "systemctl poweroff"
    }
 }

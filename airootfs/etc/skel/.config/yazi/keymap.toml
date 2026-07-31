@@ -1,0 +1,7 @@
+[mgr]
+prepend_keymap = [
+  { on = [ "g", "u" ], run = 'shell --orphan "swaybg -i %s -m fill"', desc = "Set as wallpaper" },
+  { on = [ "d", "d" ], run = "remove --permanently --force", desc = "Permanently delete without confirmation" },
+  { on = [ "d", "t" ], run = "remove --force", desc = "Move to Trash without confirmation" },
+  { on = [ "g", "f" ], run  = "cd ~/.config", desc = "Cd to ~/.config" },
+]

@@ -11,6 +11,14 @@ xz
 
 ## === TERMINAL ===
 foot
+kitty
+
+## === SHELL ===
+fish
+
+## === EDITOR ===
+neovim
+git
 
 ## === WAYLAND DESKTOP ENVIRONMENT ===
 mangowm-git
@@ -22,10 +30,24 @@ grim
 slurp
 wl-clipboard
 brightnessctl
-swaylock
+hyprlock
 mako
 reflector
 rofi
+wlogout
+
+## === SYSTEM MONITOR ===
+btop
+
+## === FILE MANAGER ===
+yazi
+bat
+zoxide
+libarchive
+
+## === MULTIMEDIA ===
+mpv
+cava
 
 ## === FILE MANAGER & UTILITIES ===
 thunar
