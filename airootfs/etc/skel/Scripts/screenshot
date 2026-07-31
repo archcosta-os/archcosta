@@ -7,6 +7,7 @@ if [[ "$1" == "-r" ]]; then
     notify-send "Screenshot" "Region copied to clipboard"
 else
     # Full screenshot
+    mkdir -p ~/Pictures
     f=~/Pictures/$(date +%d%m%y%H%M).png
     grim "$f"
     notify-send "Screenshot" "Saved to $f"

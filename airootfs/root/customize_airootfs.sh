@@ -11,8 +11,15 @@ locale-gen
 # Allow Parallel Downloads in pacman
 [[ -f /etc/pacman.conf ]] && sed -i "s/^#Parallel/Parallel/" /etc/pacman.conf
 
-# Remove local build-time repo — path won't exist on live system
-sed -i '/^\[aur_repo\]/,/^$/d' /etc/pacman.conf
+# Ensure [archcosta-repo] is present — hosted on GitHub Pages and works on the live system
+if ! grep -q '^\[archcosta-repo\]' /etc/pacman.conf; then
+cat >> /etc/pacman.conf <<'EOF'
+
+[archcosta-repo]
+SigLevel = Optional TrustAll
+Server = https://archcosta-os.github.io/archcosta-repo
+EOF
+fi
 
 # Un-comment mirrorlist to allow pacman to work live....
 [[ -f /etc/pacman.d/mirrorlist ]] && sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
@@ -74,7 +81,7 @@ useradd -m -p "" -G "wheel" -s /bin/bash -g users live
 chown live /home/live
 
 # Start required systemd services
-systemctl enable {pacman-init,NetworkManager}.service -f
+systemctl enable {pacman-init,NetworkManager,bluetooth}.service -f
 
 # Compile dconf database for system defaults
 if command -v dconf &>/dev/null; then
