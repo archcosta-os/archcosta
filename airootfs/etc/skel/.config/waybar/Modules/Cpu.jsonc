@@ -1,8 +1,0 @@
-{
-  "cpu": {
-    "interval": 1,
-    "format": "   {}%",
-    "format-alt": "   {avg_frequency} GHz",
-    "tooltip": true
-    }
-}

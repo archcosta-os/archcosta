@@ -12,6 +12,7 @@ xz
 ## === TERMINAL ===
 foot
 kitty
+alacritty
 
 ## === SHELL ===
 fish
@@ -22,8 +23,7 @@ git
 
 ## === WAYLAND DESKTOP ENVIRONMENT ===
 mangowm-git
-swaybg
-waybar
+noctalia
 xorg-xwayland
 wlr-randr
 grim
@@ -31,10 +31,15 @@ slurp
 wl-clipboard
 brightnessctl
 hyprlock
-mako
 reflector
 rofi
 wlogout
+capitaine-cursors
+qt6ct
+breeze-icons
+breeze
+xdg-desktop-portal-gtk
+gnome-keyring
 
 ## === SYSTEM MONITOR ===
 btop
@@ -45,6 +50,7 @@ bat
 zoxide
 libarchive
 xdg-utils
+dolphin
 
 ## === MULTIMEDIA ===
 mpv
